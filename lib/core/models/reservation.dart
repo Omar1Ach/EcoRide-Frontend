@@ -21,6 +21,8 @@ class Reservation with _$Reservation {
 
 @freezed
 class CreateReservationRequest with _$CreateReservationRequest {
+  const CreateReservationRequest._();
+
   const factory CreateReservationRequest({
     required String vehicleId,
   }) = _CreateReservationRequest;

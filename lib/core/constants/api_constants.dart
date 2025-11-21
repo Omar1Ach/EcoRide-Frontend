@@ -2,10 +2,11 @@ class ApiConstants {
   ApiConstants._();
 
   // Base URL - Change this to your backend IP
-  // For Android Emulator: http://10.0.2.2:5000
-  // For iOS Simulator: http://localhost:5000
-  // For Physical Device: http://YOUR_IP:5000
-  static const String baseUrl = 'http://localhost:5000';
+  // For Android Emulator: http://10.0.2.2:5002
+  // For iOS Simulator: http://localhost:5002
+  // For Physical Device: http://YOUR_IP:5002
+  // For Web: http://localhost:5002
+  static const String baseUrl = 'http://localhost:5002';
 
   // API Version
   static const String apiVersion = 'v1';

@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/colors.dart';
+import '../../../../core/models/user.dart';
+import '../../../../core/providers/auth_provider.dart';
+import 'otp_verification_screen.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -28,9 +32,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  void _handleRegister() {
+  Future<void> _handleRegister() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: Implement registration logic
+      final phone = '+212${_phoneController.text}';
+      final request = RegisterRequest(
+        fullName: _fullNameController.text.trim(),
+        email: _emailController.text.trim(),
+        phoneNumber: phone,
+        password: _passwordController.text,
+      );
+
+      final userId = await ref.read(authStateProvider.notifier).register(request);
+
+      if (!mounted) return;
+
+      if (userId != null) {
+        // Navigate to OTP verification screen
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => OtpVerificationScreen(
+              userId: userId,
+              phoneNumber: phone,
+            ),
+          ),
+        );
+      } else {
+        final error = ref.read(authStateProvider).errorMessage;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error ?? 'Registration failed'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
     }
   }
 
@@ -190,9 +224,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 32),
 
                 // Register Button
-                ElevatedButton(
-                  onPressed: _handleRegister,
-                  child: const Text('Sign Up'),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final authState = ref.watch(authStateProvider);
+                    return ElevatedButton(
+                      onPressed: authState.isLoading ? null : _handleRegister,
+                      child: authState.isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : const Text('Sign Up'),
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 16),

@@ -34,6 +34,8 @@ class LocationData with _$LocationData {
 
 @freezed
 class VehicleSearchRequest with _$VehicleSearchRequest {
+  const VehicleSearchRequest._();
+
   const factory VehicleSearchRequest({
     required double latitude,
     required double longitude,
@@ -52,6 +54,8 @@ class VehicleSearchRequest with _$VehicleSearchRequest {
 
 @freezed
 class ScanQrRequest with _$ScanQrRequest {
+  const ScanQrRequest._();
+
   const factory ScanQrRequest({
     required String qrCode,
   }) = _ScanQrRequest;

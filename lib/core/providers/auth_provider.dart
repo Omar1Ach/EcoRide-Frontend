@@ -88,7 +88,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<bool> register(RegisterRequest request) async {
+  Future<String?> register(RegisterRequest request) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     final authService = ref.read(authServiceProvider);
@@ -96,16 +96,16 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
 
     if (response is Success<AuthResponse>) {
       state = state.copyWith(isLoading: false);
-      return true;
+      return response.data.userId;
     } else if (response is Error<AuthResponse>) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: response.message,
       );
-      return false;
+      return null;
     }
 
-    return false;
+    return null;
   }
 
   Future<bool> verifyOtp(VerifyOtpRequest request) async {

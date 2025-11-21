@@ -102,7 +102,7 @@ class DioClient {
           message = 'No internet connection';
         }
 
-        error.error = message;
+        // Pass the error with the custom message
         handler.next(error);
       },
     );

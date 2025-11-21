@@ -17,6 +17,8 @@ class WalletBalance with _$WalletBalance {
 
 @freezed
 class AddFundsRequest with _$AddFundsRequest {
+  const AddFundsRequest._();
+
   const factory AddFundsRequest({
     required String userId,
     required double amount,
@@ -53,6 +55,8 @@ class WalletTransaction with _$WalletTransaction {
 
 @freezed
 class TransactionHistoryRequest with _$TransactionHistoryRequest {
+  const TransactionHistoryRequest._();
+
   const factory TransactionHistoryRequest({
     required String userId,
     int? pageNumber,

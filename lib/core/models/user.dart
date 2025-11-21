@@ -44,6 +44,7 @@ class RegisterRequest with _$RegisterRequest {
   factory RegisterRequest.fromJson(Map<String, dynamic> json) =>
       _$RegisterRequestFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => {
         'fullName': fullName,
         'email': email,
@@ -54,6 +55,8 @@ class RegisterRequest with _$RegisterRequest {
 
 @freezed
 class LoginRequest with _$LoginRequest {
+  const LoginRequest._();
+
   const factory LoginRequest({
     required String email,
     required String password,
@@ -67,6 +70,8 @@ class LoginRequest with _$LoginRequest {
 
 @freezed
 class VerifyOtpRequest with _$VerifyOtpRequest {
+  const VerifyOtpRequest._();
+
   const factory VerifyOtpRequest({
     required String userId,
     required String otpCode,

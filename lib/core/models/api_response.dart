@@ -1,8 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'api_response.freezed.dart';
-part 'api_response.g.dart';
 
+// Generic response wrapper - no JSON serialization needed
 @Freezed(genericArgumentFactories: true)
 class ApiResponse<T> with _$ApiResponse<T> {
   const factory ApiResponse.success({
@@ -16,15 +16,10 @@ class ApiResponse<T> with _$ApiResponse<T> {
     int? statusCode,
     Map<String, dynamic>? details,
   }) = Error<T>;
-
-  factory ApiResponse.fromJson(
-    Map<String, dynamic> json,
-    T Function(Object?) fromJsonT,
-  ) =>
-      _$ApiResponseFromJson(json, fromJsonT);
 }
 
-@freezed
+// Generic paginated response - no JSON serialization needed
+@Freezed(genericArgumentFactories: true)
 class PaginatedResponse<T> with _$PaginatedResponse<T> {
   const factory PaginatedResponse({
     required List<T> items,
@@ -35,10 +30,4 @@ class PaginatedResponse<T> with _$PaginatedResponse<T> {
     required bool hasPreviousPage,
     required bool hasNextPage,
   }) = _PaginatedResponse<T>;
-
-  factory PaginatedResponse.fromJson(
-    Map<String, dynamic> json,
-    T Function(Object?) fromJsonT,
-  ) =>
-      _$PaginatedResponseFromJson(json, fromJsonT);
 }

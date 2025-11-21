@@ -28,6 +28,8 @@ class Trip with _$Trip {
 
 @freezed
 class StartTripRequest with _$StartTripRequest {
+  const StartTripRequest._();
+
   const factory StartTripRequest({
     required String reservationId,
   }) = _StartTripRequest;
@@ -51,6 +53,8 @@ class StartTripResponse with _$StartTripResponse {
 
 @freezed
 class EndTripRequest with _$EndTripRequest {
+  const EndTripRequest._();
+
   const factory EndTripRequest({
     required double latitude,
     required double longitude,
@@ -99,6 +103,8 @@ class TripReceipt with _$TripReceipt {
 
 @freezed
 class TripHistoryRequest with _$TripHistoryRequest {
+  const TripHistoryRequest._();
+
   const factory TripHistoryRequest({
     required String userId,
     int? pageNumber,
