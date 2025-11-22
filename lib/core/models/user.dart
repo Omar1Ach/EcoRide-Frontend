@@ -26,6 +26,7 @@ class AuthResponse with _$AuthResponse {
     required String userId,
     required String email,
     required DateTime expiresAt,
+    User? user,
   }) = _AuthResponse;
 
   factory AuthResponse.fromJson(Map<String, dynamic> json) =>
@@ -60,11 +61,13 @@ class LoginRequest with _$LoginRequest {
   const factory LoginRequest({
     required String email,
     required String password,
+    @Default(false) bool enable2FA,
   }) = _LoginRequest;
 
   Map<String, dynamic> toJson() => {
         'email': email,
         'password': password,
+        'enable2FA': enable2FA,
       };
 }
 
@@ -73,12 +76,12 @@ class VerifyOtpRequest with _$VerifyOtpRequest {
   const VerifyOtpRequest._();
 
   const factory VerifyOtpRequest({
-    required String userId,
-    required String otpCode,
+    required String phoneNumber,
+    required String code,
   }) = _VerifyOtpRequest;
 
   Map<String, dynamic> toJson() => {
-        'userId': userId,
-        'otpCode': otpCode,
+        'phoneNumber': phoneNumber,
+        'code': code,
       };
 }

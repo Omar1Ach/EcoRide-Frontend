@@ -111,11 +111,16 @@ class DioClient {
   Future<bool> _refreshToken() async {
     try {
       final refreshToken = await _secureStorage.read(key: ApiConstants.refreshTokenKey);
-      if (refreshToken == null) return false;
+      final userId = await _secureStorage.read(key: ApiConstants.userIdKey);
+      
+      if (refreshToken == null || userId == null) return false;
 
       final response = await _dio.post(
         ApiConstants.refreshToken,
-        data: {'refreshToken': refreshToken},
+        data: {
+          'userId': userId,
+          'refreshToken': refreshToken,
+        },
       );
 
       if (response.statusCode == 200) {

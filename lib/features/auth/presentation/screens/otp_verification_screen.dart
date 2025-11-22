@@ -3,16 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/models/user.dart';
+import '../../../../core/models/api_response.dart';
 import '../../../../core/providers/auth_provider.dart';
+import '../../../../core/providers/service_providers.dart';
 import '../../../map/presentation/screens/home_screen.dart';
 
 class OtpVerificationScreen extends ConsumerStatefulWidget {
-  final String userId;
   final String phoneNumber;
 
   const OtpVerificationScreen({
     super.key,
-    required this.userId,
     required this.phoneNumber,
   });
 
@@ -53,8 +53,8 @@ class _OtpVerificationScreenState
     }
 
     final request = VerifyOtpRequest(
-      userId: widget.userId,
-      otpCode: _otpCode,
+      phoneNumber: widget.phoneNumber,
+      code: _otpCode,
     );
 
     final success =
@@ -197,14 +197,28 @@ class _OtpVerificationScreenState
               // Resend OTP
               Center(
                 child: TextButton(
-                  onPressed: () {
-                    // TODO: Implement resend OTP
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('OTP code resent'),
-                        backgroundColor: AppColors.success,
-                      ),
-                    );
+                  onPressed: () async {
+                    // Implement resend OTP
+                    final authService = ref.read(authServiceProvider);
+                    final response = await authService.resendOtp(widget.phoneNumber);
+                    
+                    if (!context.mounted) return;
+
+                    if (response is Success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('OTP code resent'),
+                          backgroundColor: AppColors.success,
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(response.message ?? 'Failed to resend OTP'),
+                          backgroundColor: AppColors.error,
+                        ),
+                      );
+                    }
                   },
                   child: const Text('Didn\'t receive the code? Resend'),
                 ),

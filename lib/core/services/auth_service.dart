@@ -9,15 +9,15 @@ class AuthService {
 
   AuthService(this._dioClient);
 
-  Future<ApiResponse<AuthResponse>> register(RegisterRequest request) async {
+  Future<ApiResponse<void>> register(RegisterRequest request) async {
     try {
-      final response = await _dioClient.dio.post(
+      await _dioClient.dio.post(
         ApiConstants.register,
         data: request.toJson(),
       );
 
-      return ApiResponse.success(
-        data: AuthResponse.fromJson(response.data),
+      return const ApiResponse.success(
+        data: null,
         message: 'Registration successful. Please verify your phone number.',
       );
     } on DioException catch (e) {
@@ -37,8 +37,8 @@ class AuthService {
         data: request.toJson(),
       );
 
-      return ApiResponse.success(
-        data: response.data['isVerified'] ?? true,
+      return const ApiResponse.success(
+        data: true, // Swagger says 200 OK, assuming success means verified
         message: 'Phone number verified successfully',
       );
     } on DioException catch (e) {
@@ -51,11 +51,11 @@ class AuthService {
     }
   }
 
-  Future<ApiResponse<bool>> resendOtp(String userId) async {
+  Future<ApiResponse<bool>> resendOtp(String phoneNumber) async {
     try {
       await _dioClient.dio.post(
         ApiConstants.resendOtp,
-        data: {'userId': userId},
+        data: {'phoneNumber': phoneNumber},
       );
 
       return const ApiResponse.success(
@@ -79,6 +79,8 @@ class AuthService {
         data: request.toJson(),
       );
 
+      // Swagger says 200 OK. Assuming standard AuthResponse structure for now.
+      // If backend returns different structure, this needs adjustment.
       final authResponse = AuthResponse.fromJson(response.data);
 
       // Store tokens
@@ -115,17 +117,12 @@ class AuthService {
 
   Future<ApiResponse<bool>> logout() async {
     try {
-      await _dioClient.dio.post(ApiConstants.logout);
+      // await _dioClient.dio.post(ApiConstants.logout); // Not in Swagger
       await _dioClient.clearTokens();
 
       return const ApiResponse.success(
         data: true,
         message: 'Logout successful',
-      );
-    } on DioException catch (e) {
-      return ApiResponse.error(
-        message: e.error?.toString() ?? 'Logout failed',
-        statusCode: e.response?.statusCode,
       );
     } catch (e) {
       return ApiResponse.error(message: e.toString());

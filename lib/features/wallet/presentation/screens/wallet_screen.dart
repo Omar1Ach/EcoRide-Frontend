@@ -7,148 +7,162 @@ class WalletScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Wallet'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.history),
-            onPressed: () {
-              // TODO: Navigate to transaction history
-            },
-          ),
-        ],
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.close, color: AppColors.textPrimary),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Balance Card
-            Card(
-              color: AppColors.primary,
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            Text(
+              'Wallet',
+              style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+            ),
+            const SizedBox(height: 32),
+
+            // Promos & Referrals
+            Text(
+              'Promos & referrals',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+            ),
+            const SizedBox(height: 16),
+            _buildMenuCard([
+              _buildMenuItem(
+                context,
+                icon: Icons.local_offer_outlined,
+                title: 'Promos',
+                onTap: () {},
+              ),
+              const Divider(height: 1),
+              _buildMenuItem(
+                context,
+                icon: Icons.card_giftcard,
+                title: 'Get free credits',
+                onTap: () {},
+              ),
+            ]),
+
+            const SizedBox(height: 32),
+
+            // Payment
+            Text(
+              'Payment',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.check, color: AppColors.success),
+                    title: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 2,),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: const Text(
+                            'Pay',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const Text('Apple Pay (Default)'),
+                      ],
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 8,),
+                  ),
+                  const Divider(height: 1, indent: 24, endIndent: 24),
+                  ListTile(
+                    leading: const Icon(Icons.credit_card_outlined),
+                    title: const Text('Add card'),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 8,),
+                    onTap: () {},
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 32),
+
+            // Balance
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ListTile(
+                title: const Text('EcoRide Cash'),
+                trailing: const Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      'Current Balance',
+                    Text(
+                      '\$0.00',
                       style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      '250.00 MAD',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 32,
                         fontWeight: FontWeight.bold,
+                        fontSize: 16,
                       ),
                     ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: () {
-                        _showAddFundsDialog(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: AppColors.primary,
-                      ),
-                      child: const Text('Add Funds'),
-                    ),
+                    SizedBox(width: 8),
+                    Icon(Icons.chevron_right, color: AppColors.textSecondary),
                   ],
                 ),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                onTap: () {},
               ),
             ),
 
             const SizedBox(height: 24),
 
-            // Quick Add Amounts
+            // Footer
             Text(
-              'Quick Add',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-
-            const SizedBox(height: 12),
-
-            Row(
-              children: [
-                Expanded(
-                  child: _QuickAddButton(amount: 50, onTap: () {}),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _QuickAddButton(amount: 100, onTap: () {}),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _QuickAddButton(amount: 200, onTap: () {}),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _QuickAddButton(amount: 500, onTap: () {}),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 24),
-
-            // Recent Transactions
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Recent Transactions',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                TextButton(
-                  onPressed: () {
-                    // TODO: View all transactions
-                  },
-                  child: const Text('View All'),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 12),
-
-            // Transaction List
-            ...List.generate(
-              5,
-              (index) => Card(
-                margin: const EdgeInsets.only(bottom: 8),
-                child: ListTile(
-                  leading: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: index % 2 == 0
-                          ? AppColors.success.withOpacity(0.2)
-                          : AppColors.error.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      index % 2 == 0 ? Icons.add : Icons.remove,
-                      color: index % 2 == 0 ? AppColors.success : AppColors.error,
-                    ),
+              'A small amount may be temporarily placed on hold when you start your ride. Learn more',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.textSecondary,
                   ),
-                  title: Text(
-                    index % 2 == 0 ? 'Top-up' : 'Trip Payment',
-                  ),
-                  subtitle: Text(
-                    'Nov ${20 - index}, 2025',
-                  ),
-                  trailing: Text(
-                    '${index % 2 == 0 ? '+' : '-'}${(index + 1) * 10}.00 MAD',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: index % 2 == 0 ? AppColors.success : AppColors.error,
-                    ),
-                  ),
-                ),
-              ),
             ),
           ],
         ),
@@ -156,70 +170,38 @@ class WalletScreen extends StatelessWidget {
     );
   }
 
-  void _showAddFundsDialog(BuildContext context) {
-    final controller = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add Funds'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Amount',
-                suffixText: 'MAD',
-                hintText: 'Enter amount (10-1000 MAD)',
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Minimum: 10 MAD\nMaximum: 1000 MAD',
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // TODO: Implement add funds
-              Navigator.pop(context);
-            },
-            child: const Text('Add'),
+  Widget _buildMenuCard(List<Widget> children) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
+      child: Column(children: children),
     );
   }
-}
 
-class _QuickAddButton extends StatelessWidget {
-  final int amount;
-  final VoidCallback onTap;
-
-  const _QuickAddButton({
-    required this.amount,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: onTap,
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+  Widget _buildMenuItem(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: AppColors.textSecondary),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.w500),
       ),
-      child: Text('$amount MAD'),
+      trailing: const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      onTap: onTap,
     );
   }
 }

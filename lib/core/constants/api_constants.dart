@@ -6,7 +6,7 @@ class ApiConstants {
   // For iOS Simulator: http://localhost:5002
   // For Physical Device: http://YOUR_IP:5002
   // For Web: http://localhost:5002
-  static const String baseUrl = 'http://localhost:5002';
+  static const String baseUrl = 'http://10.0.2.2:5002';
 
   // API Version
   static const String apiVersion = 'v1';
@@ -17,11 +17,11 @@ class ApiConstants {
 
   // Auth Endpoints
   static const String login = '/api/auth/login';
-  static const String register = '/api/auth/register';
+  static const String register = '/api/auth/signup';
   static const String verifyOtp = '/api/auth/verify-otp';
   static const String resendOtp = '/api/auth/resend-otp';
   static const String refreshToken = '/api/auth/refresh-token';
-  static const String logout = '/api/auth/logout';
+  // static const String logout = '/api/auth/logout'; // Not present in Swagger
 
   // User Endpoints
   static const String profile = '/api/users/profile';
@@ -55,4 +55,5 @@ class ApiConstants {
   static const String refreshTokenKey = 'refresh_token';
   static const String userIdKey = 'user_id';
   static const String userEmailKey = 'user_email';
+  static const String userCacheKey = 'user_cache';
 }

@@ -42,16 +42,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         password: _passwordController.text,
       );
 
-      final userId = await ref.read(authStateProvider.notifier).register(request);
+      final success = await ref.read(authStateProvider.notifier).register(request);
 
       if (!mounted) return;
 
-      if (userId != null) {
+      if (success) {
         // Navigate to OTP verification screen
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => OtpVerificationScreen(
-              userId: userId,
               phoneNumber: phone,
             ),
           ),

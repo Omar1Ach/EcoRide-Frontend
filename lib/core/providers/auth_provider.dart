@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/user.dart';
@@ -59,21 +60,19 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
 
     try {
       final token = await _storage.read(key: ApiConstants.accessTokenKey);
-      final userId = await _storage.read(key: ApiConstants.userIdKey);
+      final userJson = await _storage.read(key: ApiConstants.userCacheKey);
 
-      if (token != null && userId != null) {
-        // Fetch user profile
-        final userService = ref.read(userServiceProvider);
-        final response = await userService.getProfile(userId);
-
-        if (response is Success<User>) {
+      if (token != null && userJson != null) {
+        try {
+          final user = User.fromJson(jsonDecode(userJson));
           state = state.copyWith(
             isAuthenticated: true,
             isLoading: false,
-            user: response.data,
+            user: user,
           );
-          ref.read(currentUserProvider.notifier).state = response.data;
-        } else {
+          ref.read(currentUserProvider.notifier).state = user;
+        } catch (e) {
+          // Failed to parse cached user
           state = state.copyWith(isAuthenticated: false, isLoading: false);
         }
       } else {
@@ -88,24 +87,24 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<String?> register(RegisterRequest request) async {
+  Future<bool> register(RegisterRequest request) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     final authService = ref.read(authServiceProvider);
     final response = await authService.register(request);
 
-    if (response is Success<AuthResponse>) {
+    if (response is Success<void>) {
       state = state.copyWith(isLoading: false);
-      return response.data.userId;
-    } else if (response is Error<AuthResponse>) {
+      return true;
+    } else if (response is Error<void>) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: response.message,
       );
-      return null;
+      return false;
     }
 
-    return null;
+    return false;
   }
 
   Future<bool> verifyOtp(VerifyOtpRequest request) async {
@@ -135,17 +134,30 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     final response = await authService.login(request);
 
     if (response is Success<AuthResponse>) {
-      // Fetch user profile
-      final userService = ref.read(userServiceProvider);
-      final userResponse = await userService.getProfile(response.data.userId);
+      final authResponse = response.data;
+      
+      // If user object is returned, cache it
+      if (authResponse.user != null) {
+        await _storage.write(
+          key: ApiConstants.userCacheKey,
+          value: jsonEncode(authResponse.user!.toJson()),
+        );
 
-      if (userResponse is Success<User>) {
         state = state.copyWith(
           isAuthenticated: true,
           isLoading: false,
-          user: userResponse.data,
+          user: authResponse.user,
         );
-        ref.read(currentUserProvider.notifier).state = userResponse.data;
+        ref.read(currentUserProvider.notifier).state = authResponse.user;
+        return true;
+      } else {
+        // Fallback if user is not in response (should not happen based on requirements)
+        // We might need to fetch it, but endpoint is missing.
+        // For now, assume login succeeds but user data might be incomplete.
+        state = state.copyWith(
+          isAuthenticated: true,
+          isLoading: false,
+        );
         return true;
       }
     } else if (response is Error<AuthResponse>) {
