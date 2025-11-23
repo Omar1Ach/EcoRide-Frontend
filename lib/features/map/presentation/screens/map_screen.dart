@@ -88,9 +88,6 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
 
   void _onVehicleMarkerTap(Vehicle vehicle) {
     Haptics.selection();
-    setState(() {
-      _selectedVehicle = vehicle;
-    });
     _showVehicleDetails(vehicle);
   }
 
