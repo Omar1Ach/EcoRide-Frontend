@@ -36,6 +36,7 @@ dependencies:
   # QR Code
   # qr_code_scanner: ^1.0.1
   qr_flutter: ^4.1.0
+  mobile_scanner: ^5.2.3
 
   # Storage
   shared_preferences: ^2.3.2
