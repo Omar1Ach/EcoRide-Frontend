@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/providers/auth_provider.dart';
 import '../../../wallet/presentation/screens/wallet_screen.dart';
@@ -30,7 +31,7 @@ class DrawerMenu extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hi ${user?.fullName.split(' ').first ?? 'Rider'}',
+                    'drawer.hi'.tr(args: [user?.fullName.split(' ').first ?? 'Rider']),
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: AppColors.textPrimary,
@@ -39,9 +40,9 @@ class DrawerMenu extends ConsumerWidget {
                   const SizedBox(height: 24),
                   Row(
                     children: [
-                      _buildStatItem(context, '0', 'Kilometers', Icons.route),
+                      _buildStatItem(context, '0', 'drawer.kilometers'.tr(), Icons.route),
                       const SizedBox(width: 32),
-                      _buildStatItem(context, '0', 'Rides', Icons.electric_scooter),
+                      _buildStatItem(context, '0', 'drawer.rides'.tr(), Icons.electric_scooter),
                     ],
                   ),
                 ],
@@ -54,7 +55,7 @@ class DrawerMenu extends ConsumerWidget {
             _buildMenuItem(
               context,
               icon: Icons.account_balance_wallet_outlined,
-              title: 'Wallet',
+              title: 'wallet.title'.tr(),
               onTap: () {
                 Navigator.pop(context); // Close drawer
                 Navigator.push(
@@ -66,7 +67,7 @@ class DrawerMenu extends ConsumerWidget {
             _buildMenuItem(
               context,
               icon: Icons.history,
-              title: 'History',
+              title: 'drawer.history'.tr(),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -78,7 +79,7 @@ class DrawerMenu extends ConsumerWidget {
             _buildMenuItem(
               context,
               icon: Icons.security,
-              title: 'Safety Center',
+              title: 'drawer.safety_center'.tr(),
               onTap: () {
                 // TODO: Implement Safety Center
                 Navigator.pop(context);
@@ -87,7 +88,7 @@ class DrawerMenu extends ConsumerWidget {
             _buildMenuItem(
               context,
               icon: Icons.help_outline,
-              title: 'Help',
+              title: 'drawer.help'.tr(),
               onTap: () {
                 // TODO: Implement Help
                 Navigator.pop(context);
@@ -96,7 +97,7 @@ class DrawerMenu extends ConsumerWidget {
             _buildMenuItem(
               context,
               icon: Icons.settings_outlined,
-              title: 'Settings',
+              title: 'drawer.settings'.tr(),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -104,6 +105,16 @@ class DrawerMenu extends ConsumerWidget {
                   MaterialPageRoute(builder: (_) => const ProfileScreen()),
                 );
               },
+            ),
+            
+            const Divider(height: 32, indent: 24, endIndent: 24),
+            
+            // Language Switcher
+            _buildMenuItem(
+              context,
+              icon: Icons.language,
+              title: 'drawer.language'.tr(),
+              onTap: () => _showLanguageDialog(context),
             ),
 
             const Spacer(),
@@ -121,6 +132,36 @@ class DrawerMenu extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _showLanguageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('drawer.language'.tr()),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildLanguageOption(context, 'English', const Locale('en')),
+            _buildLanguageOption(context, 'Français', const Locale('fr')),
+            _buildLanguageOption(context, 'العربية', const Locale('ar')),
+            _buildLanguageOption(context, 'Español', const Locale('es')),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageOption(BuildContext context, String name, Locale locale) {
+    final isSelected = context.locale == locale;
+    return ListTile(
+      title: Text(name),
+      trailing: isSelected ? const Icon(Icons.check, color: AppColors.primary) : null,
+      onTap: () {
+        context.setLocale(locale);
+        Navigator.pop(context);
+      },
     );
   }
 

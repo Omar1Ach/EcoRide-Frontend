@@ -1,0 +1,67 @@
+{
+    "app_title": "EcoRide",
+    "common": {
+        "loading": "جار التحميل...",
+        "error": "خطأ",
+        "success": "نجاح",
+        "cancel": "إلغاء",
+        "confirm": "تأكيد",
+        "save": "حفظ",
+        "close": "إغلاق",
+        "back": "رجوع",
+        "next": "التالي",
+        "scan": "مسح",
+        "verify": "تحقق"
+    },
+    "auth": {
+        "login": "تسجيل الدخول",
+        "register": "تسجيل جديد",
+        "email": "البريد الإلكتروني",
+        "password": "كلمة المرور",
+        "phone_number": "رقم الهاتف",
+        "full_name": "الاسم الكامل",
+        "forgot_password": "نسيت كلمة المرور؟",
+        "no_account": "ليس لديك حساب؟",
+        "has_account": "لديك حساب بالفعل؟",
+        "verify_phone": "التحقق من رقم الهاتف",
+        "enter_code": "أدخل رمز التحقق",
+        "code_sent": "أرسلنا رمزاً إلى {}",
+        "resend_code": "إعادة إرسال الرمز",
+        "resend_in": "إعادة الإرسال خلال {} ث",
+        "terms_agree": "أوافق على الشروط والأحكام",
+        "login_success": "تم تسجيل الدخول بنجاح",
+        "register_success": "تم التسجيل بنجاح"
+    },
+    "map": {
+        "getting_location": "تحديد موقعك...",
+        "scan_to_ride": "امسح للركوب",
+        "vehicle_types": "أنواع المركبات",
+        "bikes": "دراجات",
+        "scooters": "سكوترات",
+        "reserve": "حجز",
+        "battery": "البطارية",
+        "status": "الحالة",
+        "code": "الرمز",
+        "reserved_msg": "تم حجز {}!"
+    },
+    "wallet": {
+        "title": "المحفظة",
+        "promos": "العروض والإحالات",
+        "get_free_credits": "احصل على رصيد مجاني",
+        "payment": "الدفع",
+        "pay": "دفع",
+        "add_card": "إضافة بطاقة",
+        "balance": "رصيد EcoRide",
+        "hold_info": "قد يتم تعليق مبلغ صغير مؤقتاً عند بدء رحلتك. معرفة المزيد"
+    },
+    "drawer": {
+        "hi": "مرحباً {}",
+        "kilometers": "كيلومترات",
+        "rides": "رحلات",
+        "history": "السجل",
+        "safety_center": "مركز الأمان",
+        "help": "المساعدة",
+        "settings": "الإعدادات",
+        "language": "اللغة"
+    }
+}

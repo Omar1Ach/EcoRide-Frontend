@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/models/vehicle.dart';
 import '../../../../core/providers/vehicle_provider.dart';
@@ -203,7 +204,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
             left: AppSpacing.lg,
             right: AppSpacing.lg,
             child: PrimaryButton(
-              text: 'Scan to Ride',
+              text: 'map.scan_to_ride'.tr(),
               icon: Icons.qr_code_scanner,
               onPressed: () async {
                 Haptics.medium();
@@ -274,7 +275,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Text(
-                      _isLoadingLocation ? 'Getting location...' : 'Finding vehicles...',
+                      _isLoadingLocation ? 'map.getting_location'.tr() : 'common.loading'.tr(),
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],
@@ -477,7 +478,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
               Expanded(
                 child: _buildInfoCard(
                   Icons.battery_charging_full,
-                  'Battery',
+                  'map.battery'.tr(),
                   '${vehicle.batteryLevel}%',
                 ),
               ),
@@ -485,7 +486,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
               Expanded(
                 child: _buildInfoCard(
                   Icons.qr_code,
-                  'Code',
+                  'map.code'.tr(),
                   vehicle.qrCode,
                 ),
               ),
@@ -496,13 +497,13 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
 
           if (vehicle.isAvailable)
             PrimaryButton(
-              text: 'Reserve Vehicle',
+              text: 'map.reserve'.tr(),
               onPressed: () {
                 Haptics.success();
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Reserved ${vehicle.vehicleNumber}!'),
+                    content: Text('map.reserved_msg'.tr(args: [vehicle.vehicleNumber])),
                     backgroundColor: AppColors.success,
                     behavior: SnackBarBehavior.floating,
                   ),
@@ -548,15 +549,15 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
   void _showVehicleTypes(BuildContext context) {
     PremiumBottomSheet.show(
       context,
-      title: 'Vehicle Types',
+      title: 'map.vehicle_types'.tr(),
       child: Column(
         children: [
           const SizedBox(height: AppSpacing.md),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _buildVehicleTypeItem(context, 'Bikes', Icons.pedal_bike, true),
-              _buildVehicleTypeItem(context, 'Scooters', Icons.electric_scooter, false),
+              _buildVehicleTypeItem(context, 'map.bikes'.tr(), Icons.pedal_bike, true),
+              _buildVehicleTypeItem(context, 'map.scooters'.tr(), Icons.electric_scooter, false),
             ],
           ),
           const SizedBox(height: AppSpacing.xl),

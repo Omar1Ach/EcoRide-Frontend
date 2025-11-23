@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/models/user.dart';
 import '../../../../core/providers/auth_provider.dart';
@@ -55,7 +56,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         final error = ref.read(authStateProvider).errorMessage;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(error ?? 'Login failed'),
+            content: Text(error ?? 'auth.login_failed'.tr()),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -102,7 +103,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: AppSpacing.xl),
 
                 Text(
-                  'Welcome Back',
+                  'app_title'.tr(),
                   style: theme.textTheme.headlineMedium,
                   textAlign: TextAlign.center,
                 ).animate().fadeIn().slideY(begin: 0.2, end: 0),
@@ -110,7 +111,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: AppSpacing.xs),
 
                 Text(
-                  'Sign in to continue your eco-journey',
+                  'auth.login'.tr(),
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -122,16 +123,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 // Inputs
                 PremiumTextField(
                   controller: _emailController,
-                  label: 'Email',
-                  hint: 'Enter your email',
+                  label: 'auth.email'.tr(),
+                  hint: 'auth.email'.tr(),
                   keyboardType: TextInputType.emailAddress,
                   prefixIcon: Icons.email_outlined,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                      return 'auth.email_required'.tr();
                     }
                     if (!value.contains('@')) {
-                      return 'Please enter a valid email';
+                      return 'auth.email_invalid'.tr();
                     }
                     return null;
                   },
@@ -141,13 +142,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                 PremiumTextField(
                   controller: _passwordController,
-                  label: 'Password',
-                  hint: 'Enter your password',
+                  label: 'auth.password'.tr(),
+                  hint: 'auth.password'.tr(),
                   isPassword: true,
                   prefixIcon: Icons.lock_outlined,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                      return 'auth.password_required'.tr();
                     }
                     return null;
                   },
@@ -162,7 +163,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     onPressed: () {
                       // TODO: Implement forgot password
                     },
-                    child: const Text('Forgot Password?'),
+                    child: Text('auth.forgot_password'.tr()),
                   ),
                 ).animate().fadeIn(delay: 400.ms),
 
@@ -170,7 +171,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                 // Login Button
                 PrimaryButton(
-                  text: 'Sign In',
+                  text: 'auth.login'.tr(),
                   onPressed: _handleLogin,
                   isLoading: authState.isLoading,
                   icon: Icons.login,
@@ -183,7 +184,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Don\'t have an account? ',
+                      'auth.no_account'.tr(),
                       style: theme.textTheme.bodyMedium,
                     ),
                     TextButton(
@@ -203,7 +204,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                         );
                       },
-                      child: const Text('Sign Up'),
+                      child: Text('auth.register'.tr()),
                     ),
                   ],
                 ).animate().fadeIn(delay: 600.ms),

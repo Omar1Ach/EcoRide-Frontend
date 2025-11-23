@@ -1,0 +1,67 @@
+{
+    "app_title": "EcoRide",
+    "common": {
+        "loading": "Chargement...",
+        "error": "Erreur",
+        "success": "Succès",
+        "cancel": "Annuler",
+        "confirm": "Confirmer",
+        "save": "Enregistrer",
+        "close": "Fermer",
+        "back": "Retour",
+        "next": "Suivant",
+        "scan": "Scanner",
+        "verify": "Vérifier"
+    },
+    "auth": {
+        "login": "Connexion",
+        "register": "Inscription",
+        "email": "E-mail",
+        "password": "Mot de passe",
+        "phone_number": "Numéro de téléphone",
+        "full_name": "Nom complet",
+        "forgot_password": "Mot de passe oublié ?",
+        "no_account": "Pas encore de compte ?",
+        "has_account": "Déjà un compte ?",
+        "verify_phone": "Vérifier le numéro",
+        "enter_code": "Entrez le code de vérification",
+        "code_sent": "Nous avons envoyé un code au {}",
+        "resend_code": "Renvoyer le code",
+        "resend_in": "Renvoyer dans {} s",
+        "terms_agree": "J'accepte les conditions générales",
+        "login_success": "Connexion réussie",
+        "register_success": "Inscription réussie"
+    },
+    "map": {
+        "getting_location": "Obtention de votre position...",
+        "scan_to_ride": "Scanner pour rouler",
+        "vehicle_types": "Types de véhicules",
+        "bikes": "Vélos",
+        "scooters": "Trottinettes",
+        "reserve": "Réserver",
+        "battery": "Batterie",
+        "status": "Statut",
+        "code": "Code",
+        "reserved_msg": "Réservé {} !"
+    },
+    "wallet": {
+        "title": "Portefeuille",
+        "promos": "Promos & parrainages",
+        "get_free_credits": "Obtenir des crédits gratuits",
+        "payment": "Paiement",
+        "pay": "Payer",
+        "add_card": "Ajouter une carte",
+        "balance": "EcoRide Cash",
+        "hold_info": "Un petit montant peut être temporairement bloqué lorsque vous commencez votre trajet. En savoir plus"
+    },
+    "drawer": {
+        "hi": "Bonjour {}",
+        "kilometers": "Kilomètres",
+        "rides": "Trajets",
+        "history": "Historique",
+        "safety_center": "Centre de sécurité",
+        "help": "Aide",
+        "settings": "Paramètres",
+        "language": "Langue"
+    }
+}
