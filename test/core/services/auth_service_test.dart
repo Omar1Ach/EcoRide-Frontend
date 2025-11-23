@@ -1,3 +1,15 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+import 'package:dio/dio.dart';
+import 'package:ecoride/core/services/auth_service.dart';
+import 'package:ecoride/core/models/user.dart';
+import 'package:ecoride/core/models/api_response.dart';
+import 'package:ecoride/core/constants/api_constants.dart';
+import '../../helpers/test_helper.mocks.dart';
+
+void main() {
+  late AuthService authService;
+  late MockDioClient mockDioClient;
   late MockDio mockDio;
   late MockFlutterSecureStorage mockStorage;
 
