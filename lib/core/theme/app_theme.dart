@@ -5,6 +5,27 @@ import '../constants/colors.dart';
 class AppTheme {
   AppTheme._();
 
+  // Animation durations
+  static const Duration fastDuration = Duration(milliseconds: 200);
+  static const Duration normalDuration = Duration(milliseconds: 300);
+  static const Duration slowDuration = Duration(milliseconds: 500);
+
+  // Border radius
+  static const double radiusXs = 4.0;
+  static const double radiusSm = 8.0;
+  static const double radiusMd = 12.0;
+  static const double radiusLg = 16.0;
+  static const double radiusXl = 24.0;
+  static const double radiusFull = 999.0;
+
+  // Elevation
+  static const double elevation0 = 0.0;
+  static const double elevation1 = 2.0;
+  static const double elevation2 = 4.0;
+  static const double elevation3 = 8.0;
+  static const double elevation4 = 12.0;
+  static const double elevation5 = 16.0;
+
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
