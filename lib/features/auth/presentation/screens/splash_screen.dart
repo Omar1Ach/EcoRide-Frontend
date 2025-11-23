@@ -1,0 +1,126 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/constants/colors.dart';
+import '../../../../core/providers/auth_provider.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../map/presentation/screens/map_screen.dart';
+import 'login_screen.dart';
+
+class SplashScreen extends ConsumerStatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _checkAuth();
+  }
+
+  Future<void> _checkAuth() async {
+    // Artificial delay for animation
+    await Future.delayed(const Duration(seconds: 2));
+    
+    if (!mounted) return;
+
+    final authState = await ref.read(authStateProvider.notifier).checkAuthStatus();
+    
+    if (!mounted) return;
+
+    if (authState) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const MapScreen()),
+      );
+    } else {
+      Navigator.of(context).pushReplacement(
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => const LoginScreen(),
+          transitionsBuilder: (_, animation, __, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+          transitionDuration: AppTheme.normalDuration,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.primary,
+              AppColors.primaryDark,
+            ],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Logo Icon
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.eco,
+                  size: 64,
+                  color: AppColors.primary,
+                ),
+              )
+              .animate()
+              .scale(duration: 600.ms, curve: Curves.elasticOut)
+              .fadeIn(duration: 400.ms),
+
+              const SizedBox(height: 24),
+
+              // App Name
+              Text(
+                'EcoRide',
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                ),
+              )
+              .animate()
+              .fadeIn(delay: 200.ms, duration: 400.ms)
+              .slideY(begin: 0.2, end: 0),
+
+              const SizedBox(height: 8),
+
+              // Tagline
+              Text(
+                'Ride Green. Ride Smart.',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Colors.white.withOpacity(0.9),
+                  letterSpacing: 0.5,
+                ),
+              )
+              .animate()
+              .fadeIn(delay: 400.ms, duration: 400.ms),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

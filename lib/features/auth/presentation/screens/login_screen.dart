@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/models/user.dart';
 import '../../../../core/providers/auth_provider.dart';
-import 'register_screen.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/buttons/primary_button.dart';
+import '../../../../core/widgets/inputs/premium_text_field.dart';
 import '../../../map/presentation/screens/home_screen.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -17,7 +22,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -39,7 +43,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
       if (success) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => const HomeScreen(),
+            transitionsBuilder: (_, animation, __, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+            transitionDuration: AppTheme.normalDuration,
+          ),
         );
       } else {
         final error = ref.read(authStateProvider).errorMessage;
@@ -47,6 +57,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           SnackBar(
             content: Text(error ?? 'Login failed'),
             backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
         );
       }
@@ -56,101 +68,92 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
+    final theme = Theme.of(context);
 
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 48),
+                const SizedBox(height: AppSpacing.xxl),
 
-                // Logo
-                Container(
-                  height: 80,
-                  width: 80,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Icon(
-                    Icons.electric_bike,
-                    size: 48,
-                    color: Colors.white,
-                  ),
+                // Logo & Header
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.electric_bike,
+                      size: 48,
+                      color: AppColors.primary,
+                    ),
+                  )
+                  .animate()
+                  .scale(duration: 500.ms, curve: Curves.elasticOut),
                 ),
 
-                const SizedBox(height: 24),
-
-                // Title
-                Text(
-                  'Welcome to EcoRide',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.xl),
 
                 Text(
-                  'Sign in to continue',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  'Welcome Back',
+                  style: theme.textTheme.headlineMedium,
+                  textAlign: TextAlign.center,
+                ).animate().fadeIn().slideY(begin: 0.2, end: 0),
+
+                const SizedBox(height: AppSpacing.xs),
+
+                Text(
+                  'Sign in to continue your eco-journey',
+                  style: theme.textTheme.bodyLarge?.copyWith(
                     color: AppColors.textSecondary,
                   ),
-                ),
+                  textAlign: TextAlign.center,
+                ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.2, end: 0),
 
-                const SizedBox(height: 40),
+                const SizedBox(height: AppSpacing.xxl),
 
-                // Email Field
-                TextFormField(
+                // Inputs
+                PremiumTextField(
                   controller: _emailController,
+                  label: 'Email',
+                  hint: 'Enter your email',
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    prefixIcon: Icon(Icons.email_outlined),
-                  ),
+                  prefixIcon: Icons.email_outlined,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
                     }
+                    if (!value.contains('@')) {
+                      return 'Please enter a valid email';
+                    }
                     return null;
                   },
-                ),
+                ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.1),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
 
-                // Password Field
-                TextFormField(
+                PremiumTextField(
                   controller: _passwordController,
-                  obscureText: _obscurePassword,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    prefixIcon: const Icon(Icons.lock_outlined),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
-                    ),
-                  ),
+                  label: 'Password',
+                  hint: 'Enter your password',
+                  isPassword: true,
+                  prefixIcon: Icons.lock_outlined,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
                     }
                     return null;
                   },
-                ),
+                ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.1),
 
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
 
                 // Forgot Password
                 Align(
@@ -161,43 +164,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     },
                     child: const Text('Forgot Password?'),
                   ),
-                ),
+                ).animate().fadeIn(delay: 400.ms),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
 
                 // Login Button
-                ElevatedButton(
-                  onPressed: authState.isLoading ? null : _handleLogin,
-                  child: authState.isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
-                      : const Text('Sign In'),
-                ),
+                PrimaryButton(
+                  text: 'Sign In',
+                  onPressed: _handleLogin,
+                  isLoading: authState.isLoading,
+                  icon: Icons.login,
+                ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2),
 
-                const SizedBox(height: 24),
-
-                // Divider
-                Row(
-                  children: [
-                    const Expanded(child: Divider()),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'OR',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ),
-                    const Expanded(child: Divider()),
-                  ],
-                ),
-
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xxl),
 
                 // Register Link
                 Row(
@@ -205,20 +184,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   children: [
                     Text(
                       'Don\'t have an account? ',
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      style: theme.textTheme.bodyMedium,
                     ),
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const RegisterScreen(),
+                          PageRouteBuilder(
+                            pageBuilder: (_, __, ___) => const RegisterScreen(),
+                            transitionsBuilder: (_, animation, __, child) {
+                              return SlideTransition(
+                                position: Tween<Offset>(
+                                  begin: const Offset(1, 0),
+                                  end: Offset.zero,
+                                ).animate(animation),
+                                child: child,
+                              );
+                            },
                           ),
                         );
                       },
                       child: const Text('Sign Up'),
                     ),
                   ],
-                ),
+                ).animate().fadeIn(delay: 600.ms),
               ],
             ),
           ),
