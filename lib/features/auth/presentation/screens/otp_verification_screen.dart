@@ -9,7 +9,7 @@ import '../../../../core/models/user.dart';
 import '../../../../core/providers/auth_provider.dart';
 import '../../../../core/providers/service_providers.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/app_theme.dart';
+
 import '../../../../core/utils/haptics.dart';
 import '../../../../core/widgets/buttons/primary_button.dart';
 import '../../../map/presentation/screens/home_screen.dart';

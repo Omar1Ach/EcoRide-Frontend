@@ -32,7 +32,7 @@ class AuthService {
 
   Future<ApiResponse<bool>> verifyOtp(VerifyOtpRequest request) async {
     try {
-      final response = await _dioClient.dio.post(
+      await _dioClient.dio.post(
         ApiConstants.verifyOtp,
         data: request.toJson(),
       );

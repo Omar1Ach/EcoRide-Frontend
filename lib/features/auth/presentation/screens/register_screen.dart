@@ -5,7 +5,7 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/models/user.dart';
 import '../../../../core/providers/auth_provider.dart';
 import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/app_theme.dart';
+
 import '../../../../core/widgets/buttons/primary_button.dart';
 import '../../../../core/widgets/inputs/premium_text_field.dart';
 import 'otp_verification_screen.dart';

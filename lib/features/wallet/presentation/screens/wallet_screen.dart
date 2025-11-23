@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/providers/wallet_provider.dart';
-import '../../../../core/models/wallet.dart';
-import '../../../../core/models/api_response.dart';
+
 import '../../../../core/widgets/loading/skeleton_loader.dart';
 
 class WalletScreen extends ConsumerWidget {

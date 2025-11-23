@@ -87,6 +87,12 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  // Public method for checking auth status
+  Future<bool> checkAuthStatus() async {
+    await _checkAuthStatus();
+    return state.isAuthenticated;
+  }
+
   Future<bool> register(RegisterRequest request) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 

@@ -64,45 +64,7 @@ class DioClient {
   InterceptorsWrapper _errorInterceptor() {
     return InterceptorsWrapper(
       onError: (error, handler) {
-        String message = 'An error occurred';
-
-        if (error.response != null) {
-          switch (error.response!.statusCode) {
-            case 400:
-              message = 'Bad request';
-              break;
-            case 401:
-              message = 'Unauthorized';
-              break;
-            case 403:
-              message = 'Forbidden';
-              break;
-            case 404:
-              message = 'Not found';
-              break;
-            case 500:
-              message = 'Internal server error';
-              break;
-            case 503:
-              message = 'Service unavailable';
-              break;
-            default:
-              message = 'Error: ${error.response!.statusCode}';
-          }
-
-          if (error.response!.data is Map &&
-              error.response!.data.containsKey('message')) {
-            message = error.response!.data['message'];
-          }
-        } else if (error.type == DioExceptionType.connectionTimeout) {
-          message = 'Connection timeout';
-        } else if (error.type == DioExceptionType.receiveTimeout) {
-          message = 'Receive timeout';
-        } else if (error.type == DioExceptionType.connectionError) {
-          message = 'No internet connection';
-        }
-
-        // Pass the error with the custom message
+        // Pass the error through
         handler.next(error);
       },
     );

@@ -26,7 +26,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
   final MapController _mapController = MapController();
   LatLng _currentLocation = const LatLng(33.5731, -7.5898); // Casablanca default
   bool _isLoadingLocation = true;
-  Vehicle? _selectedVehicle;
+
 
   @override
   void initState() {
@@ -346,8 +346,8 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
             shape: BoxShape.circle,
           ),
         ).animate(onPlay: (controller) => controller.repeat())
-         .scale(begin: 0.8, end: 1.2, duration: 2.seconds)
-         .fadeOut(begin: 0.5, end: 0),
+         .scale(begin: const Offset(0.8, 0.8), end: const Offset(1.2, 1.2), duration: 2.seconds)
+         .fadeOut(begin: 0.5),
         Container(
           width: 20,
           height: 20,
