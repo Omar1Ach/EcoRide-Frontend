@@ -5,6 +5,8 @@ part 'vehicle.g.dart';
 
 @freezed
 class Vehicle with _$Vehicle {
+  const Vehicle._();
+  
   const factory Vehicle({
     required String id,
     required String vehicleNumber,
@@ -19,6 +21,12 @@ class Vehicle with _$Vehicle {
 
   factory Vehicle.fromJson(Map<String, dynamic> json) =>
       _$VehicleFromJson(json);
+  
+  bool get isAvailable => status.toLowerCase() == 'available';
+  
+  bool get isBike => vehicleType.toLowerCase() == 'bike';
+  
+  bool get isScooter => vehicleType.toLowerCase() == 'scooter';
 }
 
 @freezed
