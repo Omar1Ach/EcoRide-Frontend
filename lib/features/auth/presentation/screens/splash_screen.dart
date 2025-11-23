@@ -66,7 +66,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo Icon
+              // Logo Image
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -80,10 +80,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                     ),
                   ],
                 ),
-                child: const Icon(
-                  Icons.eco,
-                  size: 64,
-                  color: AppColors.primary,
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: 120,
+                  height: 120,
+                  fit: BoxFit.contain,
                 ),
               )
               .animate()
@@ -92,18 +93,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
               const SizedBox(height: 24),
 
-              // App Name
-              Text(
-                'EcoRide',
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
-                ),
-              )
-              .animate()
-              .fadeIn(delay: 200.ms, duration: 400.ms)
-              .slideY(begin: 0.2, end: 0),
+              // App Name (Optional, since logo might have text, but keeping it for now or removing if logo has text)
+              // The user's logo has text "EcoRide", so we might want to remove the text widget or keep it if the logo text is small.
+              // Looking at the logo, it has "EcoRide" text. So I should probably remove the Text widget to avoid duplication.
+              // Let's comment it out or remove it. I'll remove it for a cleaner look.
+
 
               const SizedBox(height: 8),
 
