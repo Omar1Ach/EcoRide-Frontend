@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../../../core/constants/colors.dart';
 
 class MapScreen extends StatefulWidget {
@@ -9,42 +12,110 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  final MapController _mapController = MapController();
+  LatLng _currentLocation = const LatLng(33.5731, -7.5898); // Casablanca default
+  bool _isLoadingLocation = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      // Check permissions
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          setState(() => _isLoadingLocation = false);
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        setState(() => _isLoadingLocation = false);
+        return;
+      }
+
+      // Get current position
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      setState(() {
+        _currentLocation = LatLng(position.latitude, position.longitude);
+        _isLoadingLocation = false;
+      });
+
+      // Animate to current location
+      _mapController.move(_currentLocation, 15.0);
+    } catch (e) {
+      setState(() => _isLoadingLocation = false);
+    }
+  }
+
+  void _centerOnUserLocation() {
+    _mapController.move(_currentLocation, 15.0);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Map Placeholder
-          Container(
-            color: AppColors.surfaceVariant,
-            child: const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.map,
-                    size: 64,
-                    color: AppColors.textSecondary,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Map View',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Google Maps will be integrated here',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textHint,
-                    ),
-                  ),
-                ],
+          // Map
+          FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              initialCenter: _currentLocation,
+              initialZoom: 15.0,
+              minZoom: 5.0,
+              maxZoom: 18.0,
+              interactionOptions: const InteractionOptions(
+                flags: InteractiveFlag.all,
               ),
             ),
+            children: [
+              // Map Tiles
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.example.ecoride',
+                maxZoom: 19,
+              ),
+              
+              // User Location Marker
+              if (!_isLoadingLocation)
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      point: _currentLocation,
+                      width: 40,
+                      height: 40,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 3),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+            ],
           ),
 
           // Top Buttons
@@ -94,11 +165,9 @@ class _MapScreenState extends State<MapScreen> {
             child: FloatingActionButton(
               heroTag: 'location_btn',
               mini: true,
-              onPressed: () {
-                // TODO: Center map on user location
-              },
+              onPressed: _centerOnUserLocation,
               backgroundColor: Colors.white,
-              foregroundColor: AppColors.textPrimary,
+              foregroundColor: AppColors.primary,
               child: const Icon(Icons.my_location),
             ),
           ),
@@ -111,6 +180,12 @@ class _MapScreenState extends State<MapScreen> {
             child: ElevatedButton(
               onPressed: () {
                 // TODO: Implement QR scanner
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('QR Scanner coming soon!'),
+                    backgroundColor: AppColors.primary,
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
@@ -137,6 +212,45 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
           ),
+
+          // Loading Indicator
+          if (_isLoadingLocation)
+            Positioned(
+              top: 100,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Text('Getting your location...'),
+                    ],
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
