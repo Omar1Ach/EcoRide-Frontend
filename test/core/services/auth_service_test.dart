@@ -48,19 +48,20 @@ void main() {
         ),
       );
 
-      when(mockDioClient.post(
+      when(mockDio.post(
         ApiConstants.login,
-        data: loginRequest.toJson(),
-      )).thenAnswer((_) async => ApiResponse.success(data: authResponse));
+        data: anyNamed('data'),
+      )).thenAnswer((_) async => Response(
+        data: authResponse.toJson(),
+        statusCode: 200,
+        requestOptions: RequestOptions(path: ApiConstants.login),
+      ));
 
       when(mockStorage.write(key: anyNamed('key'), value: anyNamed('value')))
           .thenAnswer((_) async {});
 
       // Act
-      final result = await authService.login(
-        email: 'test@example.com',
-        password: 'password',
-      );
+      final result = await authService.login(loginRequest);
 
       // Assert
       expect(result, isA<Success<AuthResponse>>());
@@ -69,15 +70,21 @@ void main() {
 
     test('login returns error when API call fails', () async {
       // Arrange
-      when(mockDioClient.post(
+      when(mockDio.post(
         ApiConstants.login,
         data: anyNamed('data'),
-      )).thenAnswer((_) async => const ApiResponse.error(message: 'Invalid credentials'));
+      )).thenThrow(DioException(
+        requestOptions: RequestOptions(path: ApiConstants.login),
+        response: Response(
+          statusCode: 401,
+          requestOptions: RequestOptions(path: ApiConstants.login),
+          data: {'message': 'Invalid credentials'},
+        ),
+      ));
 
       // Act
       final result = await authService.login(
-        email: 'test@example.com',
-        password: 'wrong_password',
+        const LoginRequest(email: 'test@example.com', password: 'wrong_password'),
       );
 
       // Assert

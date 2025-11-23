@@ -29,17 +29,25 @@ void main() {
         lastUpdated: DateTime.now(),
       );
 
-      when(mockDioClient.get(
-        '${ApiConstants.wallet}/balance',
-      )).thenAnswer((_) async => ApiResponse.success(data: balance));
+      when(mockDio.get(
+        ApiConstants.walletBalance,
+        queryParameters: anyNamed('queryParameters'),
+      )).thenAnswer((_) async => Response(
+        data: balance.toJson(),
+        statusCode: 200,
+        requestOptions: RequestOptions(path: ApiConstants.walletBalance),
+      ));
 
       // Act
-      final result = await walletService.getWalletBalance();
+      final result = await walletService.getBalance('1');
 
       // Assert
       expect(result, isA<Success<WalletBalance>>());
       expect((result as Success<WalletBalance>).data, balance);
-      verify(mockDioClient.get('${ApiConstants.wallet}/balance')).called(1);
+      verify(mockDio.get(
+        ApiConstants.walletBalance,
+        queryParameters: {'userId': '1'},
+      )).called(1);
     });
 
     test('addFunds returns updated balance on success', () async {
@@ -55,10 +63,14 @@ void main() {
         lastUpdated: DateTime.now(),
       );
 
-      when(mockDioClient.post(
-        '${ApiConstants.wallet}/add-funds',
+      when(mockDio.post(
+        ApiConstants.addFunds,
         data: anyNamed('data'),
-      )).thenAnswer((_) async => ApiResponse.success(data: balance));
+      )).thenAnswer((_) async => Response(
+        data: balance.toJson(),
+        statusCode: 200,
+        requestOptions: RequestOptions(path: ApiConstants.addFunds),
+      ));
 
       // Act
       final result = await walletService.addFunds(request);

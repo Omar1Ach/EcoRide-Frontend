@@ -42,10 +42,14 @@ void main() {
         ),
       ];
 
-      when(mockDioClient.get(
-        ApiConstants.vehicles,
+      when(mockDio.get(
+        ApiConstants.searchVehicles,
         queryParameters: anyNamed('queryParameters'),
-      )).thenAnswer((_) async => ApiResponse.success(data: vehicles));
+      )).thenAnswer((_) async => Response(
+        data: vehicles.map((v) => v.toJson()).toList(),
+        statusCode: 200,
+        requestOptions: RequestOptions(path: ApiConstants.searchVehicles),
+      ));
 
       // Act
       final result = await vehicleService.searchVehicles(request);
@@ -53,8 +57,8 @@ void main() {
       // Assert
       expect(result, isA<Success<List<Vehicle>>>());
       expect((result as Success<List<Vehicle>>).data, vehicles);
-      verify(mockDioClient.get(
-        ApiConstants.vehicles,
+      verify(mockDio.get(
+        ApiConstants.searchVehicles,
         queryParameters: request.toQueryParameters(),
       )).called(1);
     });
@@ -70,10 +74,14 @@ void main() {
         status: 'available',
       );
 
-      when(mockDioClient.post(
+      when(mockDio.post(
         ApiConstants.scanQr,
         data: anyNamed('data'),
-      )).thenAnswer((_) async => ApiResponse.success(data: scanResponse));
+      )).thenAnswer((_) async => Response(
+        data: scanResponse.toJson(),
+        statusCode: 200,
+        requestOptions: RequestOptions(path: ApiConstants.scanQr),
+      ));
 
       // Act
       final result = await vehicleService.scanQrCode(request);
