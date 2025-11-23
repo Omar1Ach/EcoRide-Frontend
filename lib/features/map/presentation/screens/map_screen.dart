@@ -1,88 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/models/vehicle.dart';
+import '../../../../core/providers/vehicle_provider.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/haptics.dart';
 import '../../../../core/widgets/bottom_sheets/premium_bottom_sheet.dart';
 import '../../../../core/widgets/buttons/primary_button.dart';
-import '../../../../core/widgets/loading/skeleton_loader.dart';
 import 'qr_scanner_screen.dart';
 
-class MapScreen extends StatefulWidget {
+class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
 
   @override
-  State<MapScreen> createState() => _MapScreenState();
+  ConsumerState<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
+class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateMixin {
   final MapController _mapController = MapController();
   LatLng _currentLocation = const LatLng(33.5731, -7.5898); // Casablanca default
   bool _isLoadingLocation = true;
-  List<Vehicle> _mockVehicles = [];
   Vehicle? _selectedVehicle;
 
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
-    _loadMockVehicles();
-  }
-
-  void _loadMockVehicles() {
-    // Mock vehicles around Casablanca
-    _mockVehicles = [
-      Vehicle(
-        id: '1',
-        vehicleNumber: 'BIKE001',
-        vehicleType: 'Bike',
-        status: 'Available',
-        batteryLevel: 85,
-        location: const LocationData(latitude: 33.5731, longitude: -7.5898),
-        qrCode: 'QR001',
-      ),
-      Vehicle(
-        id: '2',
-        vehicleNumber: 'SCOOTER001',
-        vehicleType: 'Scooter',
-        status: 'Available',
-        batteryLevel: 92,
-        location: const LocationData(latitude: 33.5741, longitude: -7.5908),
-        qrCode: 'QR002',
-      ),
-      Vehicle(
-        id: '3',
-        vehicleNumber: 'BIKE002',
-        vehicleType: 'Bike',
-        status: 'Available',
-        batteryLevel: 65,
-        location: const LocationData(latitude: 33.5721, longitude: -7.5888),
-        qrCode: 'QR003',
-      ),
-      Vehicle(
-        id: '4',
-        vehicleNumber: 'SCOOTER002',
-        vehicleType: 'Scooter',
-        status: 'InUse',
-        batteryLevel: 45,
-        location: const LocationData(latitude: 33.5751, longitude: -7.5918),
-        qrCode: 'QR004',
-      ),
-      Vehicle(
-        id: '5',
-        vehicleNumber: 'BIKE003',
-        vehicleType: 'Bike',
-        status: 'Available',
-        batteryLevel: 78,
-        location: const LocationData(latitude: 33.5711, longitude: -7.5878),
-        qrCode: 'QR005',
-      ),
-    ];
   }
 
   Future<void> _getCurrentLocation() async {
@@ -113,15 +61,26 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       });
 
       _mapController.move(_currentLocation, 15.0);
+      _loadVehicles();
     } catch (e) {
       if (!mounted) return;
       setState(() => _isLoadingLocation = false);
     }
   }
 
+  void _loadVehicles() {
+    final request = VehicleSearchRequest(
+      lat: _currentLocation.latitude,
+      lng: _currentLocation.longitude,
+      radius: 5000,
+    );
+    ref.read(nearbyVehiclesProvider(request).notifier).refresh();
+  }
+
   void _centerOnUserLocation() {
     Haptics.selection();
     _mapController.move(_currentLocation, 15.0);
+    _loadVehicles();
   }
 
   void _onVehicleMarkerTap(Vehicle vehicle) {
@@ -134,6 +93,13 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final request = VehicleSearchRequest(
+      lat: _currentLocation.latitude,
+      lng: _currentLocation.longitude,
+      radius: 5000,
+    );
+    final vehiclesState = ref.watch(nearbyVehiclesProvider(request));
+
     return Scaffold(
       body: Stack(
         children: [
@@ -148,6 +114,11 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               interactionOptions: const InteractionOptions(
                 flags: InteractiveFlag.all,
               ),
+              onPositionChanged: (position, hasGesture) {
+                if (hasGesture) {
+                  // Optional: Reload vehicles when map moves significantly
+                }
+              },
             ),
             children: [
               // Map Tiles
@@ -158,18 +129,22 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               ),
               
               // Vehicle Markers
-              MarkerLayer(
-                markers: _mockVehicles.map((vehicle) {
-                  return Marker(
-                    point: LatLng(vehicle.location.latitude, vehicle.location.longitude),
-                    width: 60,
-                    height: 60,
-                    child: GestureDetector(
-                      onTap: () => _onVehicleMarkerTap(vehicle),
-                      child: _buildVehicleMarker(vehicle),
-                    ),
-                  );
-                }).toList(),
+              vehiclesState.when(
+                data: (vehicles) => MarkerLayer(
+                  markers: vehicles.map((vehicle) {
+                    return Marker(
+                      point: LatLng(vehicle.location.latitude, vehicle.location.longitude),
+                      width: 60,
+                      height: 60,
+                      child: GestureDetector(
+                        onTap: () => _onVehicleMarkerTap(vehicle),
+                        child: _buildVehicleMarker(vehicle),
+                      ),
+                    );
+                  }).toList(),
+                ),
+                loading: () => const MarkerLayer(markers: []),
+                error: (_, __) => const MarkerLayer(markers: []),
               ),
               
               // User Location Marker
@@ -240,14 +215,27 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 );
                 
                 if (result != null && mounted) {
-                  Haptics.success();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Scanned: $result'),
-                      backgroundColor: AppColors.success,
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
+                  // Handle scanned code via provider
+                  final success = await ref.read(qrScannerProvider.notifier).scanQrCode(result);
+                  
+                  if (!mounted) return;
+
+                  if (success) {
+                    Haptics.success();
+                    final vehicle = ref.read(qrScannerProvider).value;
+                    if (vehicle != null) {
+                      _showVehicleDetails(vehicle);
+                    }
+                  } else {
+                    Haptics.error();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Invalid QR code or vehicle not found'),
+                        backgroundColor: AppColors.error,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
                 }
               },
             ).animate()
@@ -256,7 +244,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           ),
 
           // Loading Indicator
-          if (_isLoadingLocation)
+          if (_isLoadingLocation || vehiclesState.isLoading)
             Positioned(
               top: 120,
               left: AppSpacing.lg,
@@ -286,7 +274,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Text(
-                      'Getting your location...',
+                      _isLoadingLocation ? 'Getting location...' : 'Finding vehicles...',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],
