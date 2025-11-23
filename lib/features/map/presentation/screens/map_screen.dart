@@ -2,8 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/models/vehicle.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/haptics.dart';
+import '../../../../core/widgets/bottom_sheets/premium_bottom_sheet.dart';
+import '../../../../core/widgets/buttons/primary_button.dart';
+import '../../../../core/widgets/loading/skeleton_loader.dart';
 import 'qr_scanner_screen.dart';
 
 class MapScreen extends StatefulWidget {
@@ -13,7 +20,7 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   final MapController _mapController = MapController();
   LatLng _currentLocation = const LatLng(33.5731, -7.5898); // Casablanca default
   bool _isLoadingLocation = true;
@@ -98,6 +105,8 @@ class _MapScreenState extends State<MapScreen> {
         desiredAccuracy: LocationAccuracy.high,
       );
 
+      if (!mounted) return;
+
       setState(() {
         _currentLocation = LatLng(position.latitude, position.longitude);
         _isLoadingLocation = false;
@@ -105,15 +114,18 @@ class _MapScreenState extends State<MapScreen> {
 
       _mapController.move(_currentLocation, 15.0);
     } catch (e) {
+      if (!mounted) return;
       setState(() => _isLoadingLocation = false);
     }
   }
 
   void _centerOnUserLocation() {
+    Haptics.selection();
     _mapController.move(_currentLocation, 15.0);
   }
 
   void _onVehicleMarkerTap(Vehicle vehicle) {
+    Haptics.selection();
     setState(() {
       _selectedVehicle = vehicle;
     });
@@ -150,8 +162,8 @@ class _MapScreenState extends State<MapScreen> {
                 markers: _mockVehicles.map((vehicle) {
                   return Marker(
                     point: LatLng(vehicle.location.latitude, vehicle.location.longitude),
-                    width: 50,
-                    height: 50,
+                    width: 60,
+                    height: 60,
                     child: GestureDetector(
                       onTap: () => _onVehicleMarkerTap(vehicle),
                       child: _buildVehicleMarker(vehicle),
@@ -166,27 +178,9 @@ class _MapScreenState extends State<MapScreen> {
                   markers: [
                     Marker(
                       point: _currentLocation,
-                      width: 40,
-                      height: 40,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 3),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.person,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
+                      width: 50,
+                      height: 50,
+                      child: _buildUserLocationMarker(),
                     ),
                   ],
                 ),
@@ -200,29 +194,17 @@ class _MapScreenState extends State<MapScreen> {
             right: 0,
             child: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    FloatingActionButton.small(
-                      heroTag: 'drawer_btn',
-                      onPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppColors.textPrimary,
-                      elevation: 4,
-                      child: const Icon(Icons.person_outline),
+                    _buildMapButton(
+                      icon: Icons.menu,
+                      onPressed: () => Scaffold.of(context).openDrawer(),
                     ),
-                    FloatingActionButton.small(
-                      heroTag: 'filter_btn',
-                      onPressed: () {
-                        _showVehicleTypes(context);
-                      },
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppColors.textPrimary,
-                      elevation: 4,
-                      child: const Icon(Icons.tune),
+                    _buildMapButton(
+                      icon: Icons.tune,
+                      onPressed: () => _showVehicleTypes(context),
                     ),
                   ],
                 ),
@@ -233,24 +215,23 @@ class _MapScreenState extends State<MapScreen> {
           // My Location Button
           Positioned(
             bottom: 100,
-            right: 16,
-            child: FloatingActionButton(
-              heroTag: 'location_btn',
-              mini: true,
+            right: AppSpacing.md,
+            child: _buildMapButton(
+              icon: Icons.my_location,
               onPressed: _centerOnUserLocation,
-              backgroundColor: Colors.white,
-              foregroundColor: AppColors.primary,
-              child: const Icon(Icons.my_location),
             ),
           ),
 
           // Scan Button
           Positioned(
-            bottom: 32,
-            left: 16,
-            right: 16,
-            child: ElevatedButton(
+            bottom: AppSpacing.lg,
+            left: AppSpacing.lg,
+            right: AppSpacing.lg,
+            child: PrimaryButton(
+              text: 'Scan to Ride',
+              icon: Icons.qr_code_scanner,
               onPressed: () async {
+                Haptics.medium();
                 final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -259,80 +240,129 @@ class _MapScreenState extends State<MapScreen> {
                 );
                 
                 if (result != null && mounted) {
+                  Haptics.success();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Scanned: $result'),
                       backgroundColor: AppColors.success,
+                      behavior: SnackBarBehavior.floating,
                     ),
                   );
                 }
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                elevation: 4,
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.qr_code_scanner),
-                  SizedBox(width: 8),
-                  Text(
-                    'Scan',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            ).animate()
+             .fadeIn(delay: 500.ms)
+             .slideY(begin: 1, end: 0, curve: Curves.easeOutBack),
           ),
 
           // Loading Indicator
           if (_isLoadingLocation)
             Positioned(
-              top: 100,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                      Text('Getting your location...'),
-                    ],
-                  ),
+              top: 120,
+              left: AppSpacing.lg,
+              right: AppSpacing.lg,
+              child: Container(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-              ),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Text(
+                      'Getting your location...',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+              ).animate().fadeIn().slideY(begin: -0.5),
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildMapButton({required IconData icon, required VoidCallback onPressed}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Haptics.light();
+            onPressed();
+          },
+          customBorder: const CircleBorder(),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Icon(
+              icon,
+              color: AppColors.textPrimary,
+              size: 24,
+            ),
+          ),
+        ),
+      ),
+    ).animate().scale(duration: 300.ms, curve: Curves.easeOutBack);
+  }
+
+  Widget _buildUserLocationMarker() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            color: AppColors.primary.withOpacity(0.2),
+            shape: BoxShape.circle,
+          ),
+        ).animate(onPlay: (controller) => controller.repeat())
+         .scale(begin: 0.8, end: 1.2, duration: 2.seconds)
+         .fadeOut(begin: 0.5, end: 0),
+        Container(
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 3),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -340,211 +370,209 @@ class _MapScreenState extends State<MapScreen> {
     final isAvailable = vehicle.isAvailable;
     final isBike = vehicle.isBike;
     
-    return Container(
-      decoration: BoxDecoration(
-        color: isAvailable ? AppColors.primary : Colors.grey,
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white, width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Center(
-            child: Icon(
-              isBike ? Icons.pedal_bike : Icons.electric_scooter,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-          // Battery indicator
-          Positioned(
-            top: 2,
-            right: 2,
-            child: Container(
-              padding: const EdgeInsets.all(2),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: isAvailable ? AppColors.primary : Colors.grey,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 3),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 6,
+                offset: const Offset(0, 3),
               ),
-              child: Text(
-                '${vehicle.batteryLevel}%',
-                style: const TextStyle(
-                  fontSize: 8,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
-
-  void _showVehicleDetails(Vehicle vehicle) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          child: Icon(
+            isBike ? Icons.pedal_bike : Icons.electric_scooter,
+            color: Colors.white,
+            size: 20,
+          ),
         ),
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      vehicle.isBike ? Icons.pedal_bike : Icons.electric_scooter,
-                      color: AppColors.primary,
-                      size: 32,
-                    ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          vehicle.vehicleNumber,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          vehicle.vehicleType,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(context),
+        if (isAvailable)
+          Container(
+            margin: const EdgeInsets.only(top: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 2,
                 ),
               ],
             ),
-            const SizedBox(height: 24),
-            _buildInfoRow(Icons.battery_charging_full, 'Battery', '${vehicle.batteryLevel}%'),
-            const SizedBox(height: 12),
-            _buildInfoRow(Icons.info_outline, 'Status', vehicle.status),
-            const SizedBox(height: 12),
-            _buildInfoRow(Icons.qr_code, 'QR Code', vehicle.qrCode),
-            const SizedBox(height: 24),
-            if (vehicle.isAvailable)
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Reserved ${vehicle.vehicleNumber}!'),
-                        backgroundColor: AppColors.success,
+            child: Text(
+              '${vehicle.batteryLevel}%',
+              style: const TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+          ).animate().fadeIn(delay: 200.ms).slideY(begin: -0.5),
+      ],
+    ).animate()
+     .scale(duration: 400.ms, curve: Curves.elasticOut)
+     .fadeIn();
+  }
+
+  void _showVehicleDetails(Vehicle vehicle) {
+    PremiumBottomSheet.show(
+      context,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                ),
+                child: Icon(
+                  vehicle.isBike ? Icons.pedal_bike : Icons.electric_scooter,
+                  color: AppColors.primary,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      vehicle.vehicleNumber,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    Text(
+                      vehicle.vehicleType,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textSecondary,
                       ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ),
-                  child: const Text(
-                    'Reserve',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: vehicle.isAvailable 
+                      ? AppColors.success.withOpacity(0.1)
+                      : AppColors.error.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+                ),
+                child: Text(
+                  vehicle.status,
+                  style: TextStyle(
+                    color: vehicle.isAvailable ? AppColors.success : AppColors.error,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
                   ),
                 ),
               ),
-          ],
-        ),
+            ],
+          ),
+          
+          const SizedBox(height: AppSpacing.xl),
+          
+          Row(
+            children: [
+              Expanded(
+                child: _buildInfoCard(
+                  Icons.battery_charging_full,
+                  'Battery',
+                  '${vehicle.batteryLevel}%',
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: _buildInfoCard(
+                  Icons.qr_code,
+                  'Code',
+                  vehicle.qrCode,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: AppSpacing.xl),
+
+          if (vehicle.isAvailable)
+            PrimaryButton(
+              text: 'Reserve Vehicle',
+              onPressed: () {
+                Haptics.success();
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Reserved ${vehicle.vehicleNumber}!'),
+                    backgroundColor: AppColors.success,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+            ),
+            
+          const SizedBox(height: AppSpacing.lg),
+        ],
       ),
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    return Row(
-      children: [
-        Icon(icon, size: 20, color: AppColors.textSecondary),
-        const SizedBox(width: 12),
-        Text(
-          '$label: ',
-          style: TextStyle(
-            fontSize: 14,
-            color: AppColors.textSecondary,
+  Widget _buildInfoCard(IconData icon, String label, String value) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 20, color: AppColors.textSecondary),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
-        ),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   void _showVehicleTypes(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(width: 40),
-                Text(
-                  'Vehicle types',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildVehicleTypeItem(context, 'Bikes', Icons.pedal_bike, true),
-                _buildVehicleTypeItem(context, 'Scooters', Icons.electric_scooter, false),
-              ],
-            ),
-            const SizedBox(height: 32),
-          ],
-        ),
+    PremiumBottomSheet.show(
+      context,
+      title: 'Vehicle Types',
+      child: Column(
+        children: [
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildVehicleTypeItem(context, 'Bikes', Icons.pedal_bike, true),
+              _buildVehicleTypeItem(context, 'Scooters', Icons.electric_scooter, false),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xl),
+        ],
       ),
     );
   }
@@ -555,40 +583,46 @@ class _MapScreenState extends State<MapScreen> {
     IconData icon,
     bool isSelected,
   ) {
-    return Column(
-      children: [
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+    return GestureDetector(
+      onTap: () => Haptics.selection(),
+      child: Column(
+        children: [
+          AnimatedContainer(
+            duration: AppTheme.fastDuration,
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: isSelected ? AppColors.primary.withOpacity(0.1) : Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isSelected ? AppColors.primary : AppColors.border,
+                width: 2,
               ),
-            ],
-            border: isSelected
-                ? Border.all(color: AppColors.primary, width: 2)
-                : null,
+              boxShadow: [
+                if (!isSelected)
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+              ],
+            ),
+            child: Icon(
+              icon,
+              size: 32,
+              color: isSelected ? AppColors.primary : AppColors.textSecondary,
+            ),
           ),
-          child: Icon(
-            icon,
-            size: 40,
-            color: isSelected ? AppColors.primary : AppColors.textSecondary,
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              color: isSelected ? AppColors.primary : AppColors.textSecondary,
+            ),
           ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-                color: AppColors.textPrimary,
-              ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
