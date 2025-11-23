@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:ecoride/core/services/vehicle_service.dart';
 import 'package:ecoride/core/models/vehicle.dart';
 import 'package:ecoride/core/constants/api_constants.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:ecoride/core/models/api_response.dart';
 import '../../helpers/test_helper.mocks.dart';
 
 void main() {
@@ -21,53 +21,66 @@ void main() {
   });
 
   group('VehicleService', () {
-    test('searchVehicles returns list of vehicles', () async {
-      final request = VehicleSearchRequest(lat: 33.0, lng: -7.0, radius: 1000);
+    test('searchVehicles returns list of vehicles on success', () async {
+      // Arrange
+      final request = const VehicleSearchRequest(
+        latitude: 33.5731,
+        longitude: -7.5898,
+        radiusInMeters: 5000,
+      );
+
       final vehicles = [
         Vehicle(
           id: '1',
-          vehicleNumber: 'V1',
-          vehicleType: 'Bike',
-          status: 'Available',
-          batteryLevel: 90,
-          location: const LocationData(latitude: 33.0, longitude: -7.0),
-          qrCode: 'QR1',
+          vehicleNumber: 'ECO-001',
+          vehicleType: 'scooter',
+          status: 'available',
+          batteryLevel: 85,
+          location: const LocationData(latitude: 33.5731, longitude: -7.5898),
+          qrCode: 'QR001',
+          createdAt: DateTime.now(),
         ),
       ];
 
-      when(mockDio.get(
-        ApiConstants.searchVehicles,
-        queryParameters: request.toQueryParameters(),
-      )).thenAnswer((_) async => Response(
-        data: vehicles.map((v) => v.toJson()).toList(),
-        statusCode: 200,
-        requestOptions: RequestOptions(path: ApiConstants.searchVehicles),
-      ));
+      when(mockDioClient.get(
+        ApiConstants.vehicles,
+        queryParameters: anyNamed('queryParameters'),
+      )).thenAnswer((_) async => ApiResponse.success(data: vehicles));
 
+      // Act
       final result = await vehicleService.searchVehicles(request);
 
-      expect(result.isSuccess, true);
-      expect(result.data?.length, 1);
-      expect(result.data?.first.id, '1');
+      // Assert
+      expect(result, isA<Success<List<Vehicle>>>());
+      expect((result as Success<List<Vehicle>>).data, vehicles);
+      verify(mockDioClient.get(
+        ApiConstants.vehicles,
+        queryParameters: request.toQueryParameters(),
+      )).called(1);
     });
 
-    test('scanQrCode returns success', () async {
-      final request = ScanQrRequest(qrCode: 'QR123', userId: 'user1');
-      final response = ScanQrResponse(vehicleId: 'v1', status: 'unlocked');
+    test('scanQrCode returns vehicle on success', () async {
+      // Arrange
+      final request = const ScanQrRequest(qrCode: 'QR123');
+      final scanResponse = const ScanQrResponse(
+        vehicleId: '1',
+        vehicleNumber: 'ECO-001',
+        vehicleType: 'scooter',
+        batteryLevel: 85,
+        status: 'available',
+      );
 
-      when(mockDio.post(
+      when(mockDioClient.post(
         ApiConstants.scanQr,
-        data: request.toJson(),
-      )).thenAnswer((_) async => Response(
-        data: response.toJson(),
-        statusCode: 200,
-        requestOptions: RequestOptions(path: ApiConstants.scanQr),
-      ));
+        data: anyNamed('data'),
+      )).thenAnswer((_) async => ApiResponse.success(data: scanResponse));
 
+      // Act
       final result = await vehicleService.scanQrCode(request);
 
-      expect(result.isSuccess, true);
-      expect(result.data?.vehicleId, 'v1');
+      // Assert
+      expect(result, isA<Success<ScanQrResponse>>());
+      expect((result as Success<ScanQrResponse>).data, scanResponse);
     });
   });
 }

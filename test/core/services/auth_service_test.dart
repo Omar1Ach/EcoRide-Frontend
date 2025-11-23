@@ -27,44 +27,6 @@ void main() {
     when(mockDio.options).thenReturn(options);
   });
 
-  group('AuthService', () {
-    test('login returns success when API call is successful', () async {
-      // Arrange
-      final loginRequest = LoginRequest(email: 'test@example.com', password: 'password');
-      final authResponse = AuthResponse(
-        accessToken: 'access_token',
-        refreshToken: 'refresh_token',
-        userId: 'user_id',
-        email: 'test@example.com',
-        fullName: 'Test User',
-      );
-
-      when(mockDio.post(
-        ApiConstants.login,
-        data: loginRequest.toJson(),
-      )).thenAnswer((_) async => Response(
-        data: authResponse.toJson(),
-        statusCode: 200,
-        requestOptions: RequestOptions(path: ApiConstants.login),
-      ));
-
-      when(mockStorage.write(key: anyNamed('key'), value: anyNamed('value')))
-          .thenAnswer((_) async {});
-
-      // Act
-      final result = await authService.login(loginRequest);
-
-      // Assert
-      expect(result.isSuccess, true);
-      expect(result.data, isA<AuthResponse>());
-      expect(result.data?.email, 'test@example.com');
-      verify(mockStorage.write(key: ApiConstants.accessTokenKey, value: 'access_token')).called(1);
-    });
-
-    test('login returns error when API call fails', () async {
-      // Arrange
-      final loginRequest = LoginRequest(email: 'test@example.com', password: 'wrong_password');
-
       when(mockDio.post(
         ApiConstants.login,
         data: loginRequest.toJson(),

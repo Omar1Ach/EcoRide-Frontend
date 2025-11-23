@@ -51,7 +51,9 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
       }
 
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
       );
 
       if (!mounted) return;
@@ -71,9 +73,9 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
 
   void _loadVehicles() {
     final request = VehicleSearchRequest(
-      lat: _currentLocation.latitude,
-      lng: _currentLocation.longitude,
-      radius: 5000,
+      latitude: _currentLocation.latitude,
+      longitude: _currentLocation.longitude,
+      radiusInMeters: 5000,
     );
     ref.read(nearbyVehiclesProvider(request).notifier).refresh();
   }
@@ -95,9 +97,9 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final request = VehicleSearchRequest(
-      lat: _currentLocation.latitude,
-      lng: _currentLocation.longitude,
-      radius: 5000,
+      latitude: _currentLocation.latitude,
+      longitude: _currentLocation.longitude,
+      radiusInMeters: 5000,
     );
     final vehiclesState = ref.watch(nearbyVehiclesProvider(request));
 
@@ -223,8 +225,19 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
 
                   if (success) {
                     Haptics.success();
-                    final vehicle = ref.read(qrScannerProvider).value;
-                    if (vehicle != null) {
+                    final scanResponse = ref.read(qrScannerProvider).value;
+                    if (scanResponse != null) {
+                      // Fetch full vehicle details or construct temporary one
+                      // For now, constructing temporary one to fix type error
+                      final vehicle = Vehicle(
+                        id: scanResponse.vehicleId,
+                        vehicleNumber: scanResponse.vehicleNumber,
+                        vehicleType: scanResponse.vehicleType,
+                        status: scanResponse.status,
+                        batteryLevel: scanResponse.batteryLevel,
+                        location: const LocationData(latitude: 0, longitude: 0), // Unknown
+                        qrCode: result,
+                      );
                       _showVehicleDetails(vehicle);
                     }
                   } else {

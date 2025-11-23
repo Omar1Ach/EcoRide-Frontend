@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:ecoride/core/services/wallet_service.dart';
 import 'package:ecoride/core/models/wallet.dart';
 import 'package:ecoride/core/constants/api_constants.dart';
+import 'package:ecoride/core/models/api_response.dart';
 import '../../helpers/test_helper.mocks.dart';
 
 void main() {
@@ -20,41 +21,51 @@ void main() {
   });
 
   group('WalletService', () {
-    test('getBalance returns success', () async {
-      final walletBalance = WalletBalance(balance: 100.0, currency: 'USD');
-      
-      when(mockDio.get(
-        ApiConstants.walletBalance,
-        queryParameters: {'userId': 'user123'},
-      )).thenAnswer((_) async => Response(
-        data: walletBalance.toJson(),
-        statusCode: 200,
-        requestOptions: RequestOptions(path: ApiConstants.walletBalance),
-      ));
+    test('getWalletBalance returns balance on success', () async {
+      // Arrange
+      final balance = WalletBalance(
+        userId: '1',
+        balance: 100.0,
+        lastUpdated: DateTime.now(),
+      );
 
-      final result = await walletService.getBalance('user123');
+      when(mockDioClient.get(
+        '${ApiConstants.wallet}/balance',
+      )).thenAnswer((_) async => ApiResponse.success(data: balance));
 
-      expect(result.isSuccess, true);
-      expect(result.data?.balance, 100.0);
+      // Act
+      final result = await walletService.getWalletBalance();
+
+      // Assert
+      expect(result, isA<Success<WalletBalance>>());
+      expect((result as Success<WalletBalance>).data, balance);
+      verify(mockDioClient.get('${ApiConstants.wallet}/balance')).called(1);
     });
 
-    test('addFunds returns success', () async {
-      final request = AddFundsRequest(amount: 50.0, paymentMethodId: 'pm_123');
-      final walletBalance = WalletBalance(balance: 150.0, currency: 'USD');
+    test('addFunds returns updated balance on success', () async {
+      // Arrange
+      final request = const AddFundsRequest(
+        userId: '1',
+        amount: 50.0,
+        paymentMethod: 'card',
+      );
+      final balance = WalletBalance(
+        userId: '1',
+        balance: 150.0,
+        lastUpdated: DateTime.now(),
+      );
 
-      when(mockDio.post(
-        ApiConstants.addFunds,
-        data: request.toJson(),
-      )).thenAnswer((_) async => Response(
-        data: walletBalance.toJson(),
-        statusCode: 200,
-        requestOptions: RequestOptions(path: ApiConstants.addFunds),
-      ));
+      when(mockDioClient.post(
+        '${ApiConstants.wallet}/add-funds',
+        data: anyNamed('data'),
+      )).thenAnswer((_) async => ApiResponse.success(data: balance));
 
+      // Act
       final result = await walletService.addFunds(request);
 
-      expect(result.isSuccess, true);
-      expect(result.data?.balance, 150.0);
+      // Assert
+      expect(result, isA<Success<WalletBalance>>());
+      expect((result as Success<WalletBalance>).data, balance);
     });
   });
 }
