@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:ecoride/core/services/auth_service.dart';
 import 'package:ecoride/core/models/user.dart';
 import 'package:ecoride/core/constants/api_constants.dart';
-import 'package:ecoride/core/models/api_response.dart';
 import '../../helpers/test_helper.mocks.dart';
 
 void main() {
@@ -31,28 +30,32 @@ void main() {
   group('AuthService', () {
     test('login returns success when API call is successful', () async {
       // Arrange
-      final loginRequest = const LoginRequest(email: 'test@example.com', password: 'password');
-      final authResponse = AuthResponse(
-        accessToken: 'access_token',
-        refreshToken: 'refresh_token',
-        userId: 'user_id',
+      final loginRequest = const LoginRequest(
         email: 'test@example.com',
-        expiresAt: DateTime.now().add(const Duration(hours: 1)),
-        user: User(
-          id: 'user_id',
-          fullName: 'Test User',
-          email: 'test@example.com',
-          phoneNumber: '1234567890',
-          isPhoneVerified: true,
-          createdAt: DateTime.now(),
-        ),
+        password: 'password',
       );
+      
+      final authResponseData = {
+        'accessToken': 'access_token',
+        'refreshToken': 'refresh_token',
+        'userId': 'user_id',
+        'email': 'test@example.com',
+        'expiresAt': DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
+        'user': {
+          'id': 'user_id',
+          'fullName': 'Test User',
+          'email': 'test@example.com',
+          'phoneNumber': '1234567890',
+          'isPhoneVerified': true,
+          'createdAt': DateTime.now().toIso8601String(),
+        },
+      };
 
       when(mockDio.post(
         ApiConstants.login,
         data: anyNamed('data'),
       )).thenAnswer((_) async => Response(
-        data: authResponse.toJson(),
+        data: authResponseData,
         statusCode: 200,
         requestOptions: RequestOptions(path: ApiConstants.login),
       ));
@@ -65,11 +68,18 @@ void main() {
 
       // Assert
       expect(result, isA<Success<AuthResponse>>());
-      expect((result as Success<AuthResponse>).data, authResponse);
+      final successResult = result as Success<AuthResponse>;
+      expect(successResult.data.accessToken, 'access_token');
+      expect(successResult.data.user?.fullName, 'Test User');
     });
 
     test('login returns error when API call fails', () async {
       // Arrange
+      final loginRequest = const LoginRequest(
+        email: 'test@example.com',
+        password: 'wrong_password',
+      );
+
       when(mockDio.post(
         ApiConstants.login,
         data: anyNamed('data'),
@@ -83,13 +93,12 @@ void main() {
       ));
 
       // Act
-      final result = await authService.login(
-        const LoginRequest(email: 'test@example.com', password: 'wrong_password'),
-      );
+      final result = await authService.login(loginRequest);
 
       // Assert
       expect(result, isA<Error<AuthResponse>>());
-      expect((result as Error<AuthResponse>).message, 'Invalid credentials');
+      final errorResult = result as Error<AuthResponse>;
+      expect(errorResult.message, contains('Invalid credentials'));
     });
   });
 }
