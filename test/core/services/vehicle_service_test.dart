@@ -3,6 +3,7 @@ import 'package:mockito/mockito.dart';
 import 'package:dio/dio.dart';
 import 'package:ecoride/core/services/vehicle_service.dart';
 import 'package:ecoride/core/models/vehicle.dart';
+import 'package:ecoride/core/models/api_response.dart';
 import 'package:ecoride/core/constants/api_constants.dart';
 import '../../helpers/test_helper.mocks.dart';
 
