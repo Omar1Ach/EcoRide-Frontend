@@ -1,27 +1,33 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/providers/user_provider.dart';
+import '../../../../core/models/user.dart';
 
 /// Edit profile screen with form validation
-class EditProfileScreen extends StatefulWidget {
+class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
 
   @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
+  ConsumerState<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _fullNameController = TextEditingController(text: 'Omar Achbani');
-  final _emailController = TextEditingController(text: 'omar@ecoride.ma');
-  final _phoneController = TextEditingController(text: '612 34 56 78');
+  final _fullNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _dateOfBirthController = TextEditingController(text: 'August 15, 1995');
   final _genderController = TextEditingController(text: 'Male');
 
   bool _hasChanges = false;
+  bool _isLoading = false;
+  bool _isSaving = false;
   String? _emailError;
+  User? _currentUser;
 
   @override
   void initState() {
@@ -29,6 +35,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _fullNameController.addListener(_onFieldChanged);
     _emailController.addListener(_onFieldChanged);
     _phoneController.addListener(_onFieldChanged);
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final userProfile = await ref.read(userProfileProvider.future);
+      setState(() {
+        _currentUser = userProfile;
+        _fullNameController.text = userProfile.fullName;
+        _emailController.text = userProfile.email;
+        _phoneController.text = userProfile.phoneNumber.replaceFirst('+212', '');
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() => _isLoading = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load profile: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -155,13 +184,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  void _saveProfile() {
+  Future<void> _saveProfile() async {
     if (_formKey.currentState!.validate() && _emailError == null) {
-      // TODO: Implement save logic
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile updated successfully')),
+      setState(() => _isSaving = true);
+
+      final request = UpdateProfileRequest(
+        fullName: _fullNameController.text.trim(),
+        email: _emailController.text.trim(),
+        phoneNumber: '+212${_phoneController.text.trim()}',
       );
+
+      final profileUpdateNotifier = ref.read(profileUpdateProvider.notifier);
+      final success = await profileUpdateNotifier.updateProfile(request);
+
+      setState(() => _isSaving = false);
+
+      if (mounted) {
+        if (success) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Profile updated successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else {
+          final errorMessage = profileUpdateNotifier.errorMessage ?? 'Failed to update profile';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(errorMessage),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      }
     }
   }
 
@@ -179,45 +235,58 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
             // Form content
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildTextField(
-                        context: context,
-                        isDark: isDark,
-                        label: 'Full Name',
-                        controller: _fullNameController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Full name is required';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 24),
-                      _buildTextField(
-                        context: context,
-                        isDark: isDark,
-                        label: 'Email Address',
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        errorText: _emailError,
-                      ),
-                      const SizedBox(height: 24),
-                      _buildPhoneField(context, isDark),
-                      const SizedBox(height: 24),
-                      _buildDateOfBirthField(context, isDark),
-                      const SizedBox(height: 24),
-                      _buildGenderField(context, isDark),
-                      const SizedBox(height: 32),
-                    ],
-                  ),
-                ),
-              ),
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : Stack(
+                      children: [
+                        SingleChildScrollView(
+                          padding: const EdgeInsets.all(16),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildTextField(
+                                  context: context,
+                                  isDark: isDark,
+                                  label: 'Full Name',
+                                  controller: _fullNameController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Full name is required';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 24),
+                                _buildTextField(
+                                  context: context,
+                                  isDark: isDark,
+                                  label: 'Email Address',
+                                  controller: _emailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  errorText: _emailError,
+                                ),
+                                const SizedBox(height: 24),
+                                _buildPhoneField(context, isDark),
+                                const SizedBox(height: 24),
+                                _buildDateOfBirthField(context, isDark),
+                                const SizedBox(height: 24),
+                                _buildGenderField(context, isDark),
+                                const SizedBox(height: 32),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if (_isSaving)
+                          Container(
+                            color: Colors.black.withOpacity(0.3),
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                      ],
+                    ),
             ),
           ],
         ),
@@ -274,11 +343,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                 // Save button
                 TextButton(
-                  onPressed: _hasChanges && _emailError == null ? _saveProfile : null,
+                  onPressed: _hasChanges && _emailError == null && !_isSaving ? _saveProfile : null,
                   child: Text(
                     'Save',
                     style: TextStyle(
-                      color: _hasChanges && _emailError == null
+                      color: _hasChanges && _emailError == null && !_isSaving
                           ? AppColors.primary
                           : (isDark ? Colors.grey.shade600 : Colors.grey.shade400),
                       fontSize: 16,

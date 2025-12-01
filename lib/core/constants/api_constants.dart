@@ -24,8 +24,10 @@ class ApiConstants {
   // static const String logout = '/api/auth/logout'; // Not present in Swagger
 
   // User Endpoints
-  static const String profile = '/api/users/profile';
-  static const String updateProfile = '/api/users/profile';
+  static const String getUserProfile = '/api/users/profile';
+  static const String updateUserProfile = '/api/users/profile';
+  static const String getUserSettings = '/api/users/settings';
+  static const String updateUserSettings = '/api/users/settings';
 
   // Vehicle Endpoints
   static const String searchVehicles = '/api/vehicles/search';

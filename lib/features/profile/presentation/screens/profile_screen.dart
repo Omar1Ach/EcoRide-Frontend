@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/providers/user_provider.dart';
+import '../../../../core/providers/auth_provider.dart';
 import '../../../auth/presentation/screens/login_screen.dart';
 import '../widgets/profile_list_item.dart';
 import '../widgets/section_card.dart';
 import 'edit_profile_screen.dart';
 
 /// User profile screen with modern UI design
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final userProfileAsync = ref.watch(userProfileProvider);
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
@@ -22,41 +26,78 @@ class ProfileScreen extends StatelessWidget {
             // Header with Close and Done buttons
             _buildHeader(context),
 
-            // Scrollable content
+            // Scrollable content with pull-to-refresh
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // Profile Section
-                    _buildProfileSection(context),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  ref.invalidate(userProfileProvider);
+                },
+                child: userProfileAsync.when(
+                  data: (user) => SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      children: [
+                        // Profile Section
+                        _buildProfileSection(context, user),
 
-                    // Divider
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Divider(
-                        height: 1,
-                        thickness: 1,
-                        color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
-                      ),
+                        // Divider
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Divider(
+                            height: 1,
+                            thickness: 1,
+                            color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        // Account Section
+                        _buildAccountSection(context),
+
+                        const SizedBox(height: 16),
+
+                        // Legal & Support Section
+                        _buildLegalSupportSection(context),
+
+                        const SizedBox(height: 32),
+
+                        // Log Out Button
+                        _buildLogoutButton(context, ref),
+
+                        const SizedBox(height: 16),
+                      ],
                     ),
-
-                    const SizedBox(height: 16),
-
-                    // Account Section
-                    _buildAccountSection(context),
-
-                    const SizedBox(height: 16),
-
-                    // Legal & Support Section
-                    _buildLegalSupportSection(context),
-
-                    const SizedBox(height: 32),
-
-                    // Log Out Button
-                    _buildLogoutButton(context),
-
-                    const SizedBox(height: 16),
-                  ],
+                  ),
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  error: (error, _) => Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          size: 64,
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Failed to load profile',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                color: isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary,
+                              ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextButton(
+                          onPressed: () => ref.invalidate(userProfileProvider),
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -116,7 +157,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileSection(BuildContext context) {
+  Widget _buildProfileSection(BuildContext context, user) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
@@ -149,7 +190,7 @@ class ProfileScreen extends StatelessWidget {
 
           // User name
           Text(
-            'Omar Achbani',
+            user.fullName,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -160,7 +201,7 @@ class ProfileScreen extends StatelessWidget {
 
           // Email
           Text(
-            'omar@ecoride.ma',
+            user.email,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: isDark
                       ? AppColors.darkTextSecondary
@@ -305,7 +346,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLogoutButton(BuildContext context) {
+  Widget _buildLogoutButton(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
@@ -315,7 +356,7 @@ class ProfileScreen extends StatelessWidget {
         height: 48,
         child: ElevatedButton(
           onPressed: () {
-            _showLogoutDialog(context);
+            _showLogoutDialog(context, ref);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: isDark
@@ -341,7 +382,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  void _showLogoutDialog(BuildContext context) {
+  void _showLogoutDialog(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -353,12 +394,14 @@ class ProfileScreen extends StatelessWidget {
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
-              // TODO: Implement logout logic
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-                (route) => false,
-              );
+            onPressed: () async {
+              await ref.read(authStateProvider.notifier).logout();
+              if (context.mounted) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  (route) => false,
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.error,

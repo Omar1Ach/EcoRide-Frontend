@@ -85,3 +85,20 @@ class VerifyOtpRequest with _$VerifyOtpRequest {
         'code': code,
       };
 }
+
+@freezed
+class UpdateProfileRequest with _$UpdateProfileRequest {
+  const UpdateProfileRequest._();
+
+  const factory UpdateProfileRequest({
+    required String fullName,
+    required String email,
+    required String phoneNumber,
+  }) = _UpdateProfileRequest;
+
+  Map<String, dynamic> toJson() => {
+        'fullName': fullName,
+        'email': email,
+        'phoneNumber': phoneNumber,
+      };
+}

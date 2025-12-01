@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/providers/user_provider.dart';
 import '../widgets/custom_toggle_switch.dart';
 import '../widgets/profile_list_item.dart';
 import '../widgets/section_card.dart';
 import 'edit_profile_screen.dart';
 
 /// App settings screen with preferences and account options
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
-  bool _pushNotificationsEnabled = true;
-  bool _darkModeEnabled = false;
-  bool _hapticFeedbackEnabled = false;
-
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final settingsAsync = ref.watch(userSettingsProvider);
+    final userProfileAsync = ref.watch(userProfileProvider);
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
@@ -110,6 +110,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildProfileCard(BuildContext context, bool isDark) {
+    final userProfileAsync = ref.watch(userProfileProvider);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -125,146 +127,174 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ],
       ),
-      child: Row(
-        children: [
-          // Avatar
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.primary.withOpacity(0.7),
-                  AppColors.primary.withOpacity(0.3),
+      child: userProfileAsync.when(
+        data: (user) => Row(
+          children: [
+            // Avatar
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.primary.withOpacity(0.7),
+                    AppColors.primary.withOpacity(0.3),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: const Icon(
+                Icons.person,
+                size: 32,
+                color: Colors.white,
+              ),
+            ),
+
+            const SizedBox(width: 16),
+
+            // Name and email
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    user.fullName,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    user.email,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
+                        ),
+                  ),
                 ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
               ),
             ),
-            child: const Icon(
-              Icons.person,
-              size: 32,
-              color: Colors.white,
-            ),
-          ),
 
-          const SizedBox(width: 16),
-
-          // Name and email
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Omar Achbani',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+            // Edit button
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const EditProfileScreen(),
+                  ),
+                );
+              },
+              child: Text(
+                'Edit',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  'omar@ecoride.ma',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
-                      ),
-                ),
-              ],
-            ),
-          ),
-
-          // Edit button
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const EditProfileScreen(),
-                ),
-              );
-            },
-            child: Text(
-              'Edit',
-              style: TextStyle(
-                color: AppColors.primary,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
               ),
             ),
+          ],
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) => Center(
+          child: Text(
+            'Failed to load profile',
+            style: TextStyle(
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.lightTextSecondary,
+            ),
           ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildPreferencesSection(BuildContext context, bool isDark) {
-    return SectionCard(
-      children: [
-        // Push Notifications
-        ProfileListItem(
-          icon: Icons.notifications,
-          title: 'Push Notifications',
-          iconBackgroundColor: AppColors.primary.withOpacity(0.1),
-          iconColor: AppColors.primary,
-          showChevron: false,
-          trailing: CustomToggleSwitch(
-            value: _pushNotificationsEnabled,
-            onChanged: (value) {
-              setState(() {
-                _pushNotificationsEnabled = value;
-              });
+    final settingsAsync = ref.watch(userSettingsProvider);
+
+    return settingsAsync.when(
+      data: (settings) => SectionCard(
+        children: [
+          // Push Notifications
+          ProfileListItem(
+            icon: Icons.notifications,
+            title: 'Push Notifications',
+            iconBackgroundColor: AppColors.primary.withOpacity(0.1),
+            iconColor: AppColors.primary,
+            showChevron: false,
+            trailing: CustomToggleSwitch(
+              value: settings.pushNotificationsEnabled,
+              onChanged: (value) {
+                ref.read(userSettingsProvider.notifier).updateSetting(
+                      pushNotificationsEnabled: value,
+                    );
+              },
+            ),
+          ),
+
+          // Language
+          ProfileListItem(
+            icon: Icons.language,
+            title: 'Language',
+            iconBackgroundColor: AppColors.primary.withOpacity(0.1),
+            iconColor: AppColors.primary,
+            onTap: () {
+              // TODO: Navigate to language selection
             },
           ),
-        ),
 
-        // Language
-        ProfileListItem(
-          icon: Icons.language,
-          title: 'Language',
-          iconBackgroundColor: AppColors.primary.withOpacity(0.1),
-          iconColor: AppColors.primary,
-          onTap: () {
-            // TODO: Navigate to language selection
-          },
-        ),
+          // Dark Mode
+          ProfileListItem(
+            icon: Icons.dark_mode,
+            title: 'Dark Mode',
+            iconBackgroundColor: AppColors.primary.withOpacity(0.1),
+            iconColor: AppColors.primary,
+            showChevron: false,
+            trailing: CustomToggleSwitch(
+              value: settings.darkModeEnabled,
+              onChanged: (value) {
+                ref.read(userSettingsProvider.notifier).updateSetting(
+                      darkModeEnabled: value,
+                    );
+                // TODO: Implement theme switching
+              },
+            ),
+          ),
 
-        // Dark Mode
-        ProfileListItem(
-          icon: Icons.dark_mode,
-          title: 'Dark Mode',
-          iconBackgroundColor: AppColors.primary.withOpacity(0.1),
-          iconColor: AppColors.primary,
-          showChevron: false,
-          trailing: CustomToggleSwitch(
-            value: _darkModeEnabled,
-            onChanged: (value) {
-              setState(() {
-                _darkModeEnabled = value;
-              });
-              // TODO: Implement theme switching
-            },
+          // Haptic Feedback
+          ProfileListItem(
+            icon: Icons.vibration,
+            title: 'Haptic Feedback',
+            iconBackgroundColor: AppColors.primary.withOpacity(0.1),
+            iconColor: AppColors.primary,
+            showChevron: false,
+            trailing: CustomToggleSwitch(
+              value: settings.hapticFeedbackEnabled,
+              onChanged: (value) {
+                ref.read(userSettingsProvider.notifier).updateSetting(
+                      hapticFeedbackEnabled: value,
+                    );
+              },
+            ),
+          ),
+        ],
+      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, _) => Center(
+        child: Text(
+          'Failed to load settings',
+          style: TextStyle(
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
           ),
         ),
-
-        // Haptic Feedback
-        ProfileListItem(
-          icon: Icons.vibration,
-          title: 'Haptic Feedback',
-          iconBackgroundColor: AppColors.primary.withOpacity(0.1),
-          iconColor: AppColors.primary,
-          showChevron: false,
-          trailing: CustomToggleSwitch(
-            value: _hapticFeedbackEnabled,
-            onChanged: (value) {
-              setState(() {
-                _hapticFeedbackEnabled = value;
-              });
-            },
-          ),
-        ),
-      ],
+      ),
     );
   }
 
