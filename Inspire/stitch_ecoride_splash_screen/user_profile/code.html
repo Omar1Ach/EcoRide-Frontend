@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Profile - EcoRide</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#13ec6a",
+            "background-light": "#f6f8f7",
+            "background-dark": "#102217",
+          },
+          fontFamily: {
+            "display": ["Manrope", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative mx-auto flex h-auto min-h-screen w-full max-w-md flex-col overflow-x-hidden bg-background-light dark:bg-background-dark">
+<!-- Top App Bar -->
+<header class="flex shrink-0 items-center justify-between p-4 pb-2">
+<div class="flex size-12 shrink-0 items-center">
+<span class="material-symbols-outlined text-zinc-900 dark:text-white text-2xl">close</span>
+</div>
+<h1 class="text-lg font-bold leading-tight tracking-[-0.015em] text-zinc-900 dark:text-white flex-1 text-center">Profile</h1>
+<div class="flex w-12 shrink-0 items-center justify-end">
+<p class="text-base font-bold leading-normal tracking-[0.015em] text-primary">Done</p>
+</div>
+</header>
+<!-- Profile Header -->
+<section class="flex p-4 @container">
+<div class="flex w-full flex-col items-center gap-4">
+<div class="flex flex-col items-center gap-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32" data-alt="User's profile picture, an abstract circular gradient" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDf404MabDdAjISq0RMXy4rh0qMxmgcoQ9J0jiUmM8FGNBHHv0m01io1JPQ73L3BgslQjU6wvkXi7ZxJzkF1nIFPCmOmYR6XknkacqgVzILNYIggX7FMTHm2NTyM59RB8Yz-GhvzEbCPsiK-YkSBxoOghbFQfGzOZyhV3kt1RQvghNjqOVeFArN2bXN2wq2kTRKEAIIEmWzWAHXI3yjEq_WyiXlrS4e0D8qowZdBuxD05kNM_kxazQ-UzfCCCMc_mJUGO8Pm5n52qU8');"></div>
+<div class="flex flex-col items-center justify-center">
+<p class="text-[22px] font-bold leading-tight tracking-[-0.015em] text-zinc-900 dark:text-white text-center">Amara Dubois</p>
+<p class="text-base font-normal leading-normal text-zinc-500 dark:text-zinc-400 text-center">amara.dubois@email.com</p>
+</div>
+</div>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-full bg-primary/20 px-4 text-sm font-bold leading-normal tracking-[0.015em] text-primary @[480px]:w-auto">
+<span class="truncate">Change Photo</span>
+</button>
+</div>
+</section>
+<div class="px-4">
+<div class="h-px w-full bg-zinc-200 dark:bg-zinc-800"></div>
+</div>
+<main class="flex flex-col gap-4 py-4">
+<!-- Account Section -->
+<section>
+<h3 class="text-lg font-bold leading-tight tracking-[-0.015em] text-zinc-900 dark:text-white px-4 pb-2 pt-4">Account</h3>
+<div class="flex flex-col bg-zinc-100 dark:bg-zinc-900/50 rounded-lg mx-4">
+<div class="flex items-center gap-4 px-4 min-h-14 justify-between">
+<div class="flex items-center gap-4">
+<div class="flex shrink-0 size-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">person</span>
+</div>
+<p class="flex-1 truncate text-base font-normal leading-normal text-zinc-900 dark:text-white">Personal Details</p>
+</div>
+<div class="shrink-0">
+<div class="flex size-7 items-center justify-center text-zinc-400 dark:text-zinc-500">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+</div>
+<div class="h-px w-full bg-zinc-200 dark:bg-zinc-800 ml-4"></div>
+<div class="flex items-center gap-4 px-4 min-h-14 justify-between">
+<div class="flex items-center gap-4">
+<div class="flex shrink-0 size-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">link</span>
+</div>
+<p class="flex-1 truncate text-base font-normal leading-normal text-zinc-900 dark:text-white">Connected Accounts</p>
+</div>
+<div class="shrink-0">
+<div class="flex size-7 items-center justify-center text-zinc-400 dark:text-zinc-500">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+</div>
+<div class="h-px w-full bg-zinc-200 dark:bg-zinc-800 ml-4"></div>
+<div class="flex items-center gap-4 px-4 min-h-14 justify-between">
+<div class="flex items-center gap-4">
+<div class="flex shrink-0 size-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">credit_card</span>
+</div>
+<p class="flex-1 truncate text-base font-normal leading-normal text-zinc-900 dark:text-white">Payment Methods</p>
+</div>
+<div class="shrink-0">
+<div class="flex size-7 items-center justify-center text-zinc-400 dark:text-zinc-500">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Legal & Support Section -->
+<section>
+<h3 class="text-lg font-bold leading-tight tracking-[-0.015em] text-zinc-900 dark:text-white px-4 pb-2 pt-4">Legal &amp; Support</h3>
+<div class="flex flex-col bg-zinc-100 dark:bg-zinc-900/50 rounded-lg mx-4">
+<div class="flex items-center gap-4 px-4 min-h-14 justify-between">
+<div class="flex items-center gap-4">
+<div class="flex shrink-0 size-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">help</span>
+</div>
+<p class="flex-1 truncate text-base font-normal leading-normal text-zinc-900 dark:text-white">Help Center</p>
+</div>
+<div class="shrink-0">
+<div class="flex size-7 items-center justify-center text-zinc-400 dark:text-zinc-500">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+</div>
+<div class="h-px w-full bg-zinc-200 dark:bg-zinc-800 ml-4"></div>
+<div class="flex items-center gap-4 px-4 min-h-14 justify-between">
+<div class="flex items-center gap-4">
+<div class="flex shrink-0 size-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">gavel</span>
+</div>
+<p class="flex-1 truncate text-base font-normal leading-normal text-zinc-900 dark:text-white">Terms of Service</p>
+</div>
+<div class="shrink-0">
+<div class="flex size-7 items-center justify-center text-zinc-400 dark:text-zinc-500">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+</div>
+<div class="h-px w-full bg-zinc-200 dark:bg-zinc-800 ml-4"></div>
+<div class="flex items-center gap-4 px-4 min-h-14 justify-between">
+<div class="flex items-center gap-4">
+<div class="flex shrink-0 size-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">shield</span>
+</div>
+<p class="flex-1 truncate text-base font-normal leading-normal text-zinc-900 dark:text-white">Privacy Policy</p>
+</div>
+<div class="shrink-0">
+<div class="flex size-7 items-center justify-center text-zinc-400 dark:text-zinc-500">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Log Out Button -->
+<section class="p-4 pt-8">
+<button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 bg-zinc-100 dark:bg-zinc-900/50 text-red-500 dark:text-red-400 text-base font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Log Out</span>
+</button>
+</section>
+</main>
+</div>
+</body></html>

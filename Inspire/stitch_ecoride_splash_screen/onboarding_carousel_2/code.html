@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EcoRide Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<style>
+        .snap-mandatory { -ms-scroll-snap-type: x mandatory; scroll-snap-type: x mandatory; }
+        .snap-start { -ms-scroll-snap-align: start; scroll-snap-align: start; }
+    </style>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#65a30d",
+              "background-light": "#f8fafc",
+              "background-dark": "#020617",
+            },
+            fontFamily: {
+              display: ["Poppins", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "1rem",
+            },
+          },
+        },
+      };
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="h-screen w-screen flex flex-col justify-between p-6" id="app">
+<header class="flex justify-end">
+<button class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">Skip</button>
+</header>
+<main class="flex-grow flex flex-col justify-center">
+<div class="w-full flex snap-mandatory overflow-x-auto scrollbar-hide" id="carousel" style="-webkit-overflow-scrolling: touch;">
+<div class="w-full flex-shrink-0 snap-start flex flex-col items-center justify-center text-center px-4" id="slide1">
+<img alt="Isometric 3D illustration of a map with pins and scooters" class="w-72 h-72 object-contain mb-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXnuQcqvmox_BMaBlB_cjHRIu4NpYTm8FNzjBSLyU72oBsxv6COKEivybq8QfPNS3suGiSZVsK-ORy3WbLCxTyB9zun5hbXgEsD13ELE5ZK_nsyVKSwRGZ5ttHSaiDD_4poUfzVXcy7_hdmqFXxbYxT40UEirKdIYP5sWY-_q_aiDfR1aaDgeYpJQ56LZfZEBCGXwqevH5B7Zp60P0H_LDbZ-4mhhVvQHekTI_6jERM62vZqaYpiOaUJSPqEw8qpxpdcjqgMdf6-Nt"/>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Find a ride</h2>
+<p class="text-slate-600 dark:text-slate-300 max-w-xs">Explore the city with ease. Find the nearest scooter on the map.</p>
+</div>
+<div class="w-full flex-shrink-0 snap-start flex flex-col items-center justify-center text-center px-4" id="slide2">
+<img alt="Isometric 3D illustration of a person riding a scooter" class="w-72 h-72 object-contain mb-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBI4WIo0fFZY3GVeOpQQqYXo3lg4q5Xc_ag0gM-b1boZmcnb0dExBAjuRiKz3nJeyJwAL_0ptA4ZsPG8PnJjtViecVLr6oLpQEfKem4yFHz2yTbYeaCAXwSJ4wSHLzmm0WoVUFv03HNdLq0k30iMGqFXp3egsISAJwJWZE2zCnH_5GMkSwMROupdOXvbzgCKaHr-yYPiijmTEp5RTc0L3Cw3fWtaEx8g9IamvC7DmeNy9DdEe9RBNnDwGWbpeKQVYiEuI77GwNGMijB"/>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Ride in style</h2>
+<p class="text-slate-600 dark:text-slate-300 max-w-xs">Scan the QR code to unlock and start your journey through Morocco.</p>
+</div>
+<div class="w-full flex-shrink-0 snap-start flex flex-col items-center justify-center text-center px-4" id="slide3">
+<img alt="Isometric 3D illustration of a secure mobile payment" class="w-72 h-72 object-contain mb-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-0CFW97CXXPWdu-0kL-In6DVS6Sz5KqvQIgdVmNagSc2cf2M24GymDrdoWL7xUC6rsypjzvBd_sCpb1YYTGbSzlZOdvm1KV5ot88gV8BfyA2K84eC2lRtI48GdG1-vzWkvz7I1Qx-qyk6LHmW4035QzPm0UyCu66RwSiHq-FGy0IHniDDEwXj_dlFbIfWeMpWRFPIONpKEG4gZq-GIidXZ0YRVAZ2hHgOe-p67cgxRGVD3GXC8E5jS-xWnNXnk59lIZFG9b5Pl0_s"/>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Pay securely</h2>
+<p class="text-slate-600 dark:text-slate-300 max-w-xs">End your ride and pay hassle-free with our secure payment system.</p>
+</div>
+</div>
+</main>
+<footer class="flex flex-col items-center space-y-6 pb-4">
+<div class="flex space-x-2" id="pagination">
+<div class="w-2.5 h-2.5 bg-primary rounded-full"></div>
+<div class="w-2.5 h-2.5 bg-slate-300 dark:bg-slate-700 rounded-full"></div>
+<div class="w-2.5 h-2.5 bg-slate-300 dark:bg-slate-700 rounded-full"></div>
+</div>
+<button class="w-full bg-primary text-white font-semibold py-4 rounded-full shadow-lg shadow-primary/20 hover:bg-lime-500 transition-colors duration-300">
+                Get Started
+            </button>
+</footer>
+</div>
+<script>
+        const carousel = document.getElementById('carousel');
+        const paginationDots = document.querySelectorAll('#pagination > div');
+        const updatePagination = () => {
+            const scrollLeft = carousel.scrollLeft;
+            const slideWidth = carousel.clientWidth;
+            const activeIndex = Math.round(scrollLeft / slideWidth);
+            paginationDots.forEach((dot, index) => {
+                if (index === activeIndex) {
+                    dot.classList.add('bg-primary');
+                    dot.classList.remove('bg-slate-300', 'dark:bg-slate-700');
+                } else {
+                    dot.classList.remove('bg-primary');
+                    dot.classList.add('bg-slate-300', 'dark:bg-slate-700');
+                }
+            });
+        };
+        let debounceTimer;
+        carousel.addEventListener('scroll', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(updatePagination, 50);
+        });
+        // Initial call
+        updatePagination();
+    </script>
+
+</body></html>

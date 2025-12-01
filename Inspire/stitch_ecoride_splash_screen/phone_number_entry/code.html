@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EcoRide - Phone Number Entry</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#77c14b", // Light green from logo
+                        "background-light": "#f5f5f5", // A very light gray
+                        "background-dark": "#121212", // Standard dark mode background
+                    },
+                    fontFamily: {
+                        display: ["Poppins", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "1rem", // 16px
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .dark .glassmorphism {
+            background: rgba(18, 18, 18, 0.7);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative w-full h-screen overflow-hidden">
+<div class="absolute inset-0">
+<img alt="Aerial view of a city map with streets and buildings, representing a live map background." class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPI30W_iEUnl2sTwZrKgcJsBKkbuPyUj4POUvOMu1FJKIWAI3yhP_CAutjsmaL3y7IYOhFnoxirIybwf5M-L2AUp3mgFrltb-t-Ug8V7btLa5x-oOiDR73FchGTYFTS_iO5VvAsCpnmpJiHuerEgtCHb_fuWCWIizu6CWPqGUKPiPeRCIi5_-Qs094eMhYbV_OVPSefYQxqfE1MuiwNDieZl_SxcNvIpw6QBF1GAki0jJJclOSteB_1blcm6EIjQ6OG4B5jc4wc1EV"/>
+</div>
+<div class="absolute inset-0 bg-black/10 dark:bg-black/30 backdrop-blur-sm"></div>
+<div class="relative z-10 flex flex-col h-full p-6">
+<header class="flex-shrink-0 pt-8">
+<img alt="EcoRide logo" class="w-32 mx-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkWYFc_8kngovJioBPUffibi4yEfiXBIpo7AbN4HroPOIVl6yJ23qKHroKo9u1MlVhnVRtlfl7d9IpAQuIsgKRyTkKaPDilj7s7L9forWbOK3nw09-X9J-CwKgmtf3YuS3qrA_UCCIYLoLh9YcCsKOAl76VG1DdUlVwIIsWOE1cFKiTmEsPzFB1n63tpVo31wbW_Bq-WGaZzMWhxD4E5c_0K9Y0ctm7XKyi3GesKXJI8rlMFWU6ySBH-BEvSjm8oKaouwRfFfMzCWC"/>
+</header>
+<main class="flex-grow"></main>
+<footer class="flex-shrink-0 pb-4">
+<div class="glassmorphism border border-white/20 dark:border-white/10 rounded-2xl shadow-2xl p-6 mb-4">
+<h1 class="text-2xl font-bold text-slate-800 dark:text-white mb-2 text-center">Enter your mobile number</h1>
+<p class="text-slate-600 dark:text-slate-300 text-center mb-6">We'll send you a confirmation code.</p>
+<div class="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1 space-x-1">
+<button class="flex items-center space-x-2 px-3 py-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+<span class="text-xl">🇲🇦</span>
+<span class="text-base font-semibold text-slate-800 dark:text-slate-200">+212</span>
+<span class="material-icons text-slate-500 dark:text-slate-400">arrow_drop_down</span>
+</button>
+<input class="flex-1 bg-transparent border-none text-slate-800 dark:text-white text-lg placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-0 p-3" placeholder="6 12 34 56 78" type="tel"/>
+</div>
+<button class="w-full bg-primary text-white font-bold py-4 px-4 rounded-lg mt-4 shadow-lg shadow-primary/30 hover:opacity-90 active:scale-95 transition-all duration-200">
+                        Send Code
+                    </button>
+</div>
+<p class="text-xs text-gray-500 dark:text-gray-400 text-center px-4">
+                    By continuing, you agree to our <a class="font-semibold underline text-gray-600 dark:text-gray-300" href="#">Terms of Service</a> and <a class="font-semibold underline text-gray-600 dark:text-gray-300" href="#">Privacy Policy</a>.
+                </p>
+</footer>
+</div>
+</div>
+
+</body></html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EcoRide Splash Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        @keyframes rotate-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animated-gradient {
+            background: linear-gradient(-45deg, #6ee7b7, #34d399, #059669, #065f46);
+            background-size: 400% 400%;
+            animation: rotate-gradient 15s ease infinite;
+        }
+        @keyframes fade-in {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-text {
+            animation: fade-in 1.5s ease-out forwards;
+            opacity: 0;
+        }
+        .delay-1 {
+            animation-delay: 0.5s;
+        }
+        .delay-2 {
+            animation-delay: 1.0s;
+        }
+    </style>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#34D399", // A vibrant green from the logo
+              "background-light": "#F9FAFB", // Off-white for light mode
+              "background-dark": "#111827", // Dark gray for dark mode
+            },
+            fontFamily: {
+              display: ["Roboto", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.75rem", // 12px
+            },
+          },
+        },
+      };
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex flex-col h-screen w-full">
+<main class="flex-grow flex flex-col items-center justify-center p-8 text-center animated-gradient">
+<div class="w-48 h-48 mb-6">
+<img alt="EcoRide logo showing a scooter within the letter R, a leaf, and a lightning bolt" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlVAjmIoxQOgbb1-HICxnvuKanFUioL6H-BZFsMBBS835rusHWsv5Qvz_SvgpPf5nNO8o6BlmkICQ9T-e99kaTo8Ze_A6MdMgV4acRDaio-SDnxtueE0zcGA5dO0G74NdO3gxHg29Q5lH5OWPYtuGTlUtuXyMXT5dKqaT9YRwvKCSzYA_qLsBhsN8LtrFp1n3QAnSbnPxXvXbvnoNRHCjvgJRChWbi6w35XxiIUU3LE6RPbP2I93rrxQtMs3BcEMUCL7QSik0QU8hh"/>
+</div>
+<h1 class="text-5xl font-bold text-white tracking-tight fade-in-text delay-1">EcoRide</h1>
+<p class="mt-3 text-lg text-white/90 fade-in-text delay-2">Your Moroccan journey, electrified.</p>
+</main>
+<footer class="w-full bg-background-light dark:bg-background-dark py-6 px-6 text-center">
+<p class="text-xs text-gray-500 dark:text-gray-400">
+                By continuing, you agree to our <a class="font-medium text-primary hover:underline" href="#">Terms of Service</a> and <a class="font-medium text-primary hover:underline" href="#">Privacy Policy</a>.
+            </p>
+</footer>
+</div>
+
+</body></html>

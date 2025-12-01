@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reservation Active - EcoRide</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#6FAE42", // Light green from logo
+              "primary-dark": "#0B5450", // Dark teal from logo
+              "background-light": "#F7F7F7",
+              "background-dark": "#121212",
+              "card-light": "#FFFFFF",
+              "card-dark": "#1E1E1E",
+              "text-light-primary": "#1F2937",
+              "text-dark-primary": "#E5E7EB",
+              "text-light-secondary": "#6B7280",
+              "text-dark-secondary": "#9CA3AF",
+            },
+            fontFamily: {
+              display: ["Poppins", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "1rem", // 16px
+            },
+          },
+        },
+      };
+    </script>
+<style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .material-icons {
+            font-size: inherit;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="mx-auto max-w-sm">
+<div class="flex flex-col min-h-screen">
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm p-4 pt-6">
+<div class="flex justify-between items-center">
+<div class="bg-primary/20 text-primary-dark dark:text-primary px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
+<span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                        Reservation Active
+                    </div>
+<button class="bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 p-2 rounded-full">
+<span class="material-icons text-2xl">sos</span>
+</button>
+</div>
+</header>
+<main class="flex-grow p-4 space-y-6">
+<div class="flex flex-col items-center justify-center text-center py-6">
+<div class="relative w-48 h-48">
+<svg class="w-full h-full" viewBox="0 0 100 100">
+<circle class="text-gray-200 dark:text-gray-700" cx="50" cy="50" fill="transparent" r="46" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary" cx="50" cy="50" fill="transparent" r="46" stroke="currentColor" stroke-dasharray="289.027" stroke-dashoffset="57.8" stroke-linecap="round" stroke-width="8" style="transform: rotate(-90deg); transform-origin: 50% 50%;"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-4xl font-bold text-text-light-primary dark:text-text-dark-primary">08:23</span>
+<span class="text-sm text-text-light-secondary dark:text-text-dark-secondary">minutes remaining</span>
+</div>
+</div>
+</div>
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm">
+<div class="flex items-center space-x-4">
+<img alt="Green electric scooter" class="w-20 h-20 object-cover rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmdi5QreF7kUuDzcednCHXzfL5jt3FNcB1JUZNkDHg_ede2CXkU7dDhhjWCwF-lWCKEIfqmyPvaWJG3p9BC9jFJQ-SR9Ykhpy6C2Ceq6cwdSezKP7CgCXwABOk8w3eSS7IRAQlNCJcrxWuXuryvt1ldFzS-hxFnFRoefnA2jXoj-qhVBrmXGGezTilBtDSgnu4hln0Bmw-q-eVJzDuOW9_67tDtYlCMJ6oso0oChtlxKqoqBWxRumvHfuKgZxTZCXnubezcLxqBB8p"/>
+<div class="flex-1">
+<p class="font-bold text-lg text-text-light-primary dark:text-text-dark-primary">Vespa Elettrica</p>
+<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">ID: #ER-8317</p>
+<div class="flex items-center space-x-4 mt-2 text-sm">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-icons text-base">battery_charging_full</span>
+<span class="font-medium">92%</span>
+</div>
+<div class="flex items-center gap-1 text-text-light-secondary dark:text-text-dark-secondary">
+<span class="material-icons text-base">near_me</span>
+<span class="font-medium">Est. 25km</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-card-light dark:bg-card-dark rounded-lg shadow-sm overflow-hidden">
+<div class="relative h-40">
+<img alt="Map showing route to scooter" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-CrpYYfRjDgE4hFOctrLZ8KQFCSoeSHeLMa-ODlwjsifRSpAmQ-r4ZZzbIPZaioQCyI7bZiTWKRdT7W5jxE_4xwkNhskXuRAq4vnyZ19iRYns0LMdxHcRWb5adhKs5lJNx66YOxk_t5sQSzXnx-Is9OxBRhIOtZvf3K7_49oBP-AMWDdoApYbLBV93M5R7M7_vPbGux4e4md5HUXwJoJsTNNy6ZEvOe476TsUkhRdz6hsVAWyDpD4vCtnAJDG7w9FXDBCtHfMT6Ic"/>
+<div class="absolute inset-0 bg-gradient-to-t from-card-light dark:from-card-dark to-transparent"></div>
+</div>
+<div class="p-4 -mt-8 relative z-10">
+<div class="flex items-center justify-between">
+<div>
+<p class="font-semibold text-text-light-primary dark:text-text-dark-primary">600m away</p>
+<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">Approx. 7 min walk</p>
+</div>
+<button class="bg-primary/20 text-primary-dark dark:text-primary font-semibold py-2 px-4 rounded-full flex items-center gap-2">
+<span class="material-icons text-xl">open_in_new</span>
+                                Open in Maps
+                            </button>
+</div>
+</div>
+</div>
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-lg shadow-sm">
+<details>
+<summary class="flex items-center justify-between cursor-pointer list-none">
+<h3 class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">Where to find the QR code</h3>
+<span class="material-icons text-text-light-secondary dark:text-text-dark-secondary transition-transform transform">expand_more</span>
+</summary>
+<div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+<p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mb-4">The QR code is located on the handlebar, between the grips. Look for a small metal plate.</p>
+<img alt="Close-up of a scooter's handlebar showing a QR code location" class="w-full h-32 object-cover rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAF9IB0exyYvItepAPkcZu_kcYt8vSF4VdJimsH5MwbyMLALjVkB_Bzz-L61pBv5dHr5k7B7f4nxnMI8Yy9NMKp09_1M5jxyLehEWUmu3jAtOqpLabnmEJg2YZFSxblwYa_c9bTc93yAro9iVdO_SmMaOkuPSRmkyLhVsDSF9FbhdyJr2rmDsYmDpeU-TCG9skYEQJWZsr_cx_3PF4axlPC1QAaa4mNVDJq7qSYtuAvPjHfCbOJwJ72j_K2uh9iiwQpHyNbNxcWC1x6"/>
+</div>
+</details>
+</div>
+<div class="space-y-4">
+<div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg flex items-start gap-3">
+<span class="material-icons text-blue-500 mt-1">rule</span>
+<div>
+<h4 class="font-semibold text-blue-800 dark:text-blue-300">Reservation Rules</h4>
+<p class="text-sm text-blue-600 dark:text-blue-400">Your reservation is held for 10 minutes. After that, the vehicle becomes available to others.</p>
+</div>
+</div>
+<div class="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg flex items-start gap-3">
+<span class="material-icons text-green-500 mt-1">checklist</span>
+<div>
+<h4 class="font-semibold text-green-800 dark:text-green-300">Next Steps</h4>
+<p class="text-sm text-green-600 dark:text-green-400">Once you arrive, scan the QR code to unlock your scooter and start your ride.</p>
+</div>
+</div>
+</div>
+</main>
+<div class="h-32"></div>
+<footer class="fixed bottom-0 left-0 right-0 z-10 bg-card-light/90 dark:bg-card-dark/90 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 p-4">
+<div class="max-w-sm mx-auto flex items-center space-x-3">
+<button class="flex-1 bg-primary text-white font-bold py-4 rounded-lg text-center flex items-center justify-center gap-2 active:bg-opacity-80">
+<span class="material-icons">qr_code_scanner</span>
+                        I'm Here - Scan QR
+                    </button>
+<button class="bg-gray-200 dark:bg-gray-700 text-text-light-primary dark:text-text-dark-primary font-semibold py-4 px-5 rounded-lg">
+                        Cancel
+                    </button>
+</div>
+</footer>
+</div>
+</div>
+
+</body></html>

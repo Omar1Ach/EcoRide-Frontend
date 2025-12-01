@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edit Profile Information</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#E2725B", // Terracotta Orange
+                        "background-light": "#F9F9F9",
+                        "background-dark": "#121212",
+                        "text-light-primary": "#333333",
+                        "text-light-secondary": "#757575",
+                        "text-dark-primary": "#E0E0E0",
+                        "text-dark-secondary": "#A0A0A0",
+                        "field-light": "#EEEEEE",
+                        "field-dark": "#2C2C2C",
+                        "error": "#D32F2F",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "1.5rem",
+                        "xl": "2rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative mx-auto flex h-auto min-h-screen w-full max-w-md flex-col overflow-x-hidden">
+<!-- Sticky Top App Bar -->
+<header class="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-gray-200/50 bg-background-light/80 px-4 backdrop-blur-sm dark:border-gray-800/50 dark:bg-background-dark/80">
+<button class="text-text-light-secondary dark:text-text-dark-secondary text-base font-semibold leading-normal">Cancel</button>
+<h1 class="text-text-light-primary dark:text-text-dark-primary text-lg font-bold">Edit Profile</h1>
+<!-- Disabled Save Button by default -->
+<button class="text-gray-400 dark:text-gray-600 text-base font-bold leading-normal" disabled="">Save</button>
+<!-- Example of an enabled Save button -->
+<!-- <button class="text-primary text-base font-bold leading-normal">Save</button> -->
+</header>
+<!-- Main Content Area -->
+<main class="flex flex-1 flex-col p-4">
+<div class="flex flex-col space-y-6">
+<!-- Full Name TextField -->
+<label class="flex flex-col">
+<p class="text-text-light-secondary dark:text-text-dark-secondary pb-2 text-sm font-medium">Full Name</p>
+<input class="form-input flex h-14 w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg border-none bg-field-light p-4 text-base font-normal leading-normal text-text-light-primary placeholder:text-text-light-secondary/70 focus:outline-0 focus:ring-2 focus:ring-primary/50 dark:bg-field-dark dark:text-text-dark-primary dark:placeholder:text-text-dark-secondary/70" placeholder="Enter your full name" value="Amina Al-Fassi"/>
+</label>
+<!-- Email Address TextField -->
+<label class="flex flex-col">
+<p class="text-text-light-secondary dark:text-text-dark-secondary pb-2 text-sm font-medium">Email Address</p>
+<input class="form-input flex h-14 w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg border-none bg-field-light p-4 text-base font-normal leading-normal text-text-light-primary placeholder:text-text-light-secondary/70 focus:outline-0 focus:ring-2 focus:ring-primary/50 dark:bg-field-dark dark:text-text-dark-primary dark:placeholder:text-text-dark-secondary/70" placeholder="Enter your email address" value="amina.alfassi@email.com"/>
+<p class="text-error mt-1 text-xs">Invalid email format</p>
+</label>
+<!-- Phone Number TextField -->
+<label class="flex flex-col">
+<p class="text-text-light-secondary dark:text-text-dark-secondary pb-2 text-sm font-medium">Phone Number</p>
+<div class="flex h-14 w-full items-stretch overflow-hidden rounded-lg bg-field-light dark:bg-field-dark">
+<div class="flex items-center justify-center border-r border-gray-300 px-4 dark:border-gray-700">
+<p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium">+212</p>
+</div>
+<input class="form-input w-full min-w-0 flex-1 resize-none border-none bg-transparent p-4 text-base font-normal leading-normal text-text-light-primary placeholder:text-text-light-secondary/70 focus:outline-0 focus:ring-0 dark:text-text-dark-primary dark:placeholder:text-text-dark-secondary/70" placeholder="Enter your phone number" value="6 12 34 56 78"/>
+</div>
+</label>
+<!-- Date of Birth TextField -->
+<label class="flex flex-col">
+<p class="text-text-light-secondary dark:text-text-dark-secondary pb-2 text-sm font-medium">Date of Birth</p>
+<div class="flex h-14 w-full flex-1 items-stretch rounded-lg bg-field-light ring-offset-2 ring-offset-background-light focus-within:ring-2 focus-within:ring-primary/50 dark:bg-field-dark dark:ring-offset-background-dark">
+<input class="form-input w-full min-w-0 flex-1 resize-none rounded-l-lg border-none bg-transparent p-4 text-base font-normal leading-normal text-text-light-primary placeholder:text-text-light-secondary/70 focus:outline-0 focus:ring-0 dark:text-text-dark-primary dark:placeholder:text-text-dark-secondary/70" placeholder="Select your date of birth" readonly="" value="August 15, 1995"/>
+<div class="flex items-center justify-center pr-4 text-text-light-secondary dark:text-text-dark-secondary">
+<span class="material-symbols-outlined">calendar_today</span>
+</div>
+</div>
+</label>
+<!-- Gender TextField/Selector -->
+<label class="flex flex-col">
+<p class="text-text-light-secondary dark:text-text-dark-secondary pb-2 text-sm font-medium">Gender</p>
+<div class="flex h-14 w-full flex-1 items-stretch rounded-lg bg-field-light ring-offset-2 ring-offset-background-light focus-within:ring-2 focus-within:ring-primary/50 dark:bg-field-dark dark:ring-offset-background-dark">
+<input class="form-input w-full min-w-0 flex-1 resize-none rounded-l-lg border-none bg-transparent p-4 text-base font-normal leading-normal text-text-light-primary placeholder:text-text-light-secondary/70 focus:outline-0 focus:ring-0 dark:text-text-dark-primary dark:placeholder:text-text-dark-secondary/70" placeholder="Select your gender" readonly="" value="Female"/>
+<div class="flex items-center justify-center pr-4 text-text-light-secondary dark:text-text-dark-secondary">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+</label>
+</div>
+</main>
+</div>
+</body></html>

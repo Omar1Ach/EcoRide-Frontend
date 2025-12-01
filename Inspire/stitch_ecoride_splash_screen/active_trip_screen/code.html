@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Active Trip Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#00A699",
+              "background-light": "#F5F5F5",
+              "background-dark": "#121212",
+              "charcoal": "#333333",
+              "neutral-gray-light": "#E0E0E0",
+              "neutral-gray-dark": "#1E1E1E",
+              "warning-amber": "#FFC107",
+              "alert-red": "#D9534F"
+            },
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative mx-auto flex h-full min-h-screen w-full max-w-md flex-col">
+<!-- Sticky Header -->
+<header class="sticky top-0 z-10 bg-background-light/80 px-4 pt-4 pb-2 backdrop-blur-sm dark:bg-background-dark/80">
+<div class="flex items-center justify-between">
+<div class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/20 px-3">
+<span class="material-symbols-outlined text-sm text-primary">directions_bike</span>
+<p class="text-sm font-medium text-primary">Active</p>
+</div>
+<h1 class="text-lg font-bold text-charcoal dark:text-neutral-gray-light">Trip in Progress</h1>
+<button class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-alert-red/20 text-alert-red">
+<span class="material-symbols-outlined">sos</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex flex-1 flex-col gap-6 p-4">
+<!-- Hero Metrics Section -->
+<section class="grid grid-cols-3 gap-3">
+<div class="flex flex-col gap-1 rounded-xl bg-neutral-gray-light p-4 dark:bg-neutral-gray-dark">
+<p class="text-sm font-medium text-charcoal/60 dark:text-neutral-gray-light/60">Duration</p>
+<p class="text-xl font-bold tracking-tight text-charcoal dark:text-white">08:32</p>
+<p class="text-xs font-medium text-charcoal/60 dark:text-neutral-gray-light/60">MINS</p>
+</div>
+<div class="flex flex-col gap-1 rounded-xl border-2 border-primary bg-primary/10 p-4 dark:bg-primary/20">
+<p class="text-sm font-medium text-primary/80 dark:text-primary/90">Current Cost</p>
+<p class="text-xl font-bold tracking-tight text-primary">12.50</p>
+<p class="text-xs font-medium text-primary/80 dark:text-primary/90">MAD</p>
+</div>
+<div class="flex flex-col gap-1 rounded-xl bg-neutral-gray-light p-4 dark:bg-neutral-gray-dark">
+<p class="text-sm font-medium text-charcoal/60 dark:text-neutral-gray-light/60">Distance</p>
+<p class="text-xl font-bold tracking-tight text-charcoal dark:text-white">2.1</p>
+<p class="text-xs font-medium text-charcoal/60 dark:text-neutral-gray-light/60">KM</p>
+</div>
+</section>
+<!-- Secondary Stats Section -->
+<section>
+<div class="flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none]">
+<div class="flex h-9 flex-shrink-0 items-center justify-center gap-x-2 rounded-full bg-neutral-gray-light px-4 dark:bg-neutral-gray-dark">
+<span class="material-symbols-outlined text-lg text-charcoal dark:text-neutral-gray-light">speed</span>
+<p class="text-sm font-medium text-charcoal dark:text-neutral-gray-light">15 KM/H</p>
+</div>
+<div class="flex h-9 flex-shrink-0 items-center justify-center gap-x-2 rounded-full bg-neutral-gray-light px-4 dark:bg-neutral-gray-dark">
+<span class="material-symbols-outlined text-lg text-charcoal dark:text-neutral-gray-light">battery_5_bar</span>
+<p class="text-sm font-medium text-charcoal dark:text-neutral-gray-light">65%</p>
+</div>
+<div class="flex h-9 flex-shrink-0 items-center justify-center gap-x-2 rounded-full bg-neutral-gray-light px-4 dark:bg-neutral-gray-dark">
+<span class="material-symbols-outlined text-lg text-charcoal dark:text-neutral-gray-light">co2</span>
+<p class="text-sm font-medium text-charcoal dark:text-neutral-gray-light">150 G</p>
+</div>
+<div class="flex h-9 flex-shrink-0 items-center justify-center gap-x-2 rounded-full bg-neutral-gray-light px-4 dark:bg-neutral-gray-dark">
+<span class="material-symbols-outlined text-lg text-charcoal dark:text-neutral-gray-light">thermostat</span>
+<p class="text-sm font-medium text-charcoal dark:text-neutral-gray-light">24°C</p>
+</div>
+</div>
+</section>
+<!-- Mini-Map -->
+<section class="flex-1">
+<div class="h-full w-full min-h-64 rounded-xl bg-[url('https://image.maps.ls.hereapi.com/mia/1.6/mapview?apiKey=YOUR_API_KEY&amp;c=34.020882,-6.841650&amp;z=14&amp;w=400&amp;h=400&amp;nodot&amp;pip&amp;poix0=34.020882,-6.841650;00A699;00A699;18;.')] bg-cover bg-center" data-alt="A map showing the current route taken in a city" data-location="Rabat, Morocco" style="https://lh3.googleusercontent.com/aida-public/AB6AXuAJ4pXF3zB707P6x35O0q4CMMwMmB13Wt8GMuMVTlBigoxg9J5EoAPBz0YZzE5lIRy2P_Au16BjiBf0sAre1yWKqfvlpNvoGcjQeYNVZ3NQOHsjVcETY8pUSBFYnA4IblYw_SYv8ElQJqnm7a70sdIAGV8PXkBg0pdrcM_h3KqZ58As-ZsBSDcLhWGAknDFp9Pkoo3CGzBRfbYnTShIfC44X_XyKWf1ymDLLJpPGUtcRwiOSPV6kl2KKKxiqDMtky3rSK7WMvY5uLVO"></div>
+</section>
+<!-- Conditional Alert Banners -->
+<section class="flex flex-col gap-3">
+<div class="flex items-center gap-3 rounded-lg bg-warning-amber/20 p-3 text-warning-amber">
+<span class="material-symbols-outlined">battery_alert</span>
+<p class="flex-1 text-sm font-medium">Low Battery: Find a charging station soon.</p>
+</div>
+<div class="flex items-center gap-3 rounded-lg bg-alert-red/20 p-3 text-alert-red">
+<span class="material-symbols-outlined">wrong_location</span>
+<p class="flex-1 text-sm font-medium">You are leaving the designated service area.</p>
+</div>
+</section>
+</main>
+<!-- Bottom Action Bar -->
+<footer class="sticky bottom-0 bg-background-light/80 p-4 backdrop-blur-sm dark:bg-background-dark/80">
+<div class="flex items-center gap-4">
+<button class="flex h-14 items-center justify-center rounded-lg border border-neutral-gray-dark/20 px-6 dark:border-neutral-gray-light/20">
+<span class="material-symbols-outlined text-2xl text-charcoal dark:text-neutral-gray-light">pause</span>
+</button>
+<button class="relative flex h-14 flex-1 items-center justify-center overflow-hidden rounded-lg bg-primary text-background-dark">
+<div class="absolute inset-0 w-[75%] bg-black/20"></div>
+<span class="z-10 text-base font-bold">Hold to End Trip</span>
+</button>
+</div>
+</footer>
+</div>
+</body></html>
