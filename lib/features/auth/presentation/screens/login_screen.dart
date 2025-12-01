@@ -1,4 +1,6 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -7,9 +9,8 @@ import '../../../../core/models/user.dart';
 import '../../../../core/providers/auth_provider.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/buttons/primary_button.dart';
-import '../../../../core/widgets/inputs/premium_text_field.dart';
-import '../../../map/presentation/screens/home_screen.dart';
+import '../../../../core/utils/haptics.dart';
+import 'otp_verification_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -20,198 +21,383 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  String _selectedCountryCode = '+212';
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
-  Future<void> _handleLogin() async {
+  Future<void> _handleSendCode() async {
     if (_formKey.currentState!.validate()) {
-      final request = LoginRequest(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
+      Haptics.light();
+      final phoneNumber = '$_selectedCountryCode${_phoneController.text.trim()}';
+
+      // Navigate to OTP screen
+      Navigator.of(context).push(
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => OtpVerificationScreen(
+            phoneNumber: phoneNumber,
+          ),
+          transitionsBuilder: (_, animation, __, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+          transitionDuration: AppTheme.normalDuration,
+        ),
       );
-
-      final success = await ref.read(authStateProvider.notifier).login(request);
-
-      if (!mounted) return;
-
-      if (success) {
-        Navigator.of(context).pushReplacement(
-          PageRouteBuilder(
-            pageBuilder: (_, __, ___) => const HomeScreen(),
-            transitionsBuilder: (_, animation, __, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            transitionDuration: AppTheme.normalDuration,
-          ),
-        );
-      } else {
-        final error = ref.read(authStateProvider).errorMessage;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(error ?? 'auth.login_failed'.tr()),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          ),
-        );
-      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authStateProvider);
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: AppSpacing.xxl),
-
-                // Logo & Header
-                Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
-                      shape: BoxShape.circle,
+      body: Stack(
+        children: [
+          // Background Map Image with Blur
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/map_background.png',
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                // Fallback gradient background
+                return Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: isDark
+                          ? [
+                              AppColors.darkBackground,
+                              AppColors.darkSurface,
+                            ]
+                          : [
+                              AppColors.lightBackground,
+                              AppColors.lightSurface,
+                            ],
                     ),
-                    child: const Icon(
-                      Icons.electric_bike,
-                      size: 48,
-                      color: AppColors.primary,
+                  ),
+                );
+              },
+            ),
+          ),
+
+          // Blur Overlay
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                color: isDark
+                    ? Colors.black.withOpacity(0.3)
+                    : Colors.black.withOpacity(0.1),
+              ),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                child: Container(
+                  color: Colors.transparent,
+                ),
+              ),
+            ),
+          ),
+
+          // Content
+          SafeArea(
+            child: Column(
+              children: [
+                // Logo Header
+                Padding(
+                  padding: const EdgeInsets.only(top: 48.0, bottom: 16),
+                  child: Center(
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: 128,
+                      height: 48,
+                      fit: BoxFit.contain,
                     ),
                   )
-                  .animate()
-                  .scale(duration: 500.ms, curve: Curves.elasticOut),
+                      .animate()
+                      .fadeIn(duration: 600.ms)
+                      .slideY(begin: -0.2, end: 0),
                 ),
 
-                const SizedBox(height: AppSpacing.xl),
+                const Spacer(),
 
-                Text(
-                  'app_title'.tr(),
-                  style: theme.textTheme.headlineMedium,
-                  textAlign: TextAlign.center,
-                ).animate().fadeIn().slideY(begin: 0.2, end: 0),
-
-                const SizedBox(height: AppSpacing.xs),
-
-                Text(
-                  'auth.login'.tr(),
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                  textAlign: TextAlign.center,
-                ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.2, end: 0),
-
-                const SizedBox(height: AppSpacing.xxl),
-
-                // Inputs
-                PremiumTextField(
-                  controller: _emailController,
-                  label: 'auth.email'.tr(),
-                  hint: 'auth.email'.tr(),
-                  keyboardType: TextInputType.emailAddress,
-                  prefixIcon: Icons.email_outlined,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'auth.email_required'.tr();
-                    }
-                    if (!value.contains('@')) {
-                      return 'auth.email_invalid'.tr();
-                    }
-                    return null;
-                  },
-                ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.1),
-
-                const SizedBox(height: AppSpacing.md),
-
-                PremiumTextField(
-                  controller: _passwordController,
-                  label: 'auth.password'.tr(),
-                  hint: 'auth.password'.tr(),
-                  isPassword: true,
-                  prefixIcon: Icons.lock_outlined,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'auth.password_required'.tr();
-                    }
-                    return null;
-                  },
-                ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.1),
-
-                const SizedBox(height: AppSpacing.sm),
-
-                // Forgot Password
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      // TODO: Implement forgot password
-                    },
-                    child: Text('auth.forgot_password'.tr()),
-                  ),
-                ).animate().fadeIn(delay: 400.ms),
-
-                const SizedBox(height: AppSpacing.xl),
-
-                // Login Button
-                PrimaryButton(
-                  text: 'auth.login'.tr(),
-                  onPressed: _handleLogin,
-                  isLoading: authState.isLoading,
-                  icon: Icons.login,
-                ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2),
-
-                const SizedBox(height: AppSpacing.xxl),
-
-                // Register Link
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'auth.no_account'.tr(),
-                      style: theme.textTheme.bodyMedium,
+                // Glassmorphism Card
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? Colors.black.withOpacity(0.7)
+                          : Colors.white.withOpacity(0.6),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: isDark
+                            ? Colors.white.withOpacity(0.1)
+                            : Colors.white.withOpacity(0.2),
+                        width: 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 40,
+                          offset: const Offset(0, 20),
+                        ),
+                      ],
                     ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          PageRouteBuilder(
-                            pageBuilder: (_, __, ___) => const RegisterScreen(),
-                            transitionsBuilder: (_, animation, __, child) {
-                              return SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: const Offset(1, 0),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: child,
-                              );
-                            },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // Title
+                                Text(
+                                  'Enter your mobile number',
+                                  style: theme.textTheme.headlineSmall?.copyWith(
+                                    color: isDark
+                                        ? AppColors.darkTextPrimary
+                                        : AppColors.lightTextPrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                )
+                                    .animate()
+                                    .fadeIn(delay: 200.ms)
+                                    .slideY(begin: 0.2, end: 0),
+
+                                const SizedBox(height: 8),
+
+                                // Subtitle
+                                Text(
+                                  "We'll send you a confirmation code.",
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: isDark
+                                        ? AppColors.darkTextSecondary
+                                        : AppColors.lightTextSecondary,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                )
+                                    .animate()
+                                    .fadeIn(delay: 300.ms)
+                                    .slideY(begin: 0.2, end: 0),
+
+                                const SizedBox(height: 24),
+
+                                // Phone Number Input Container
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: isDark
+                                        ? AppColors.darkSurfaceVariant
+                                        : AppColors.lightSurface,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  padding: const EdgeInsets.all(4),
+                                  child: Row(
+                                    children: [
+                                      // Country Selector Button
+                                      InkWell(
+                                        onTap: () {
+                                          // TODO: Show country picker
+                                          Haptics.light();
+                                        },
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 12,
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Text(
+                                                '🇲🇦',
+                                                style: TextStyle(fontSize: 20),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                _selectedCountryCode,
+                                                style: theme.textTheme.bodyLarge
+                                                    ?.copyWith(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: isDark
+                                                      ? AppColors.darkTextPrimary
+                                                      : AppColors
+                                                          .lightTextPrimary,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Icon(
+                                                Icons.arrow_drop_down,
+                                                color: isDark
+                                                    ? AppColors.darkTextSecondary
+                                                    : AppColors
+                                                        .lightTextSecondary,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+
+                                      // Phone Number Input
+                                      Expanded(
+                                        child: TextFormField(
+                                          controller: _phoneController,
+                                          keyboardType: TextInputType.phone,
+                                          style: theme.textTheme.bodyLarge
+                                              ?.copyWith(
+                                            color: isDark
+                                                ? AppColors.darkTextPrimary
+                                                : AppColors.lightTextPrimary,
+                                          ),
+                                          decoration: InputDecoration(
+                                            hintText: '6 12 34 56 78',
+                                            hintStyle: theme.textTheme.bodyLarge
+                                                ?.copyWith(
+                                              color: isDark
+                                                  ? AppColors.darkTextHint
+                                                  : AppColors.lightTextHint,
+                                            ),
+                                            border: InputBorder.none,
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 12,
+                                            ),
+                                          ),
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                            LengthLimitingTextInputFormatter(10),
+                                          ],
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Please enter your phone number';
+                                            }
+                                            if (value.length < 9) {
+                                              return 'Phone number is too short';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                                    .animate()
+                                    .fadeIn(delay: 400.ms)
+                                    .slideY(begin: 0.2, end: 0),
+
+                                const SizedBox(height: 16),
+
+                                // Send Code Button
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: _handleSendCode,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.primary,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 16,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      elevation: 0,
+                                      shadowColor: AppColors.primary
+                                          .withOpacity(0.3),
+                                    ),
+                                    child: Text(
+                                      'Send Code',
+                                      style: theme.textTheme.titleMedium
+                                          ?.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                    .animate()
+                                    .fadeIn(delay: 500.ms)
+                                    .scale(begin: const Offset(0.9, 0.9)),
+                              ],
+                            ),
                           ),
-                        );
-                      },
-                      child: Text('auth.register'.tr()),
+                        ),
+                      ),
                     ),
-                  ],
-                ).animate().fadeIn(delay: 600.ms),
+                  ),
+                )
+                    .animate()
+                    .fadeIn(delay: 100.ms)
+                    .slideY(begin: 0.3, end: 0),
+
+                // Terms and Privacy
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 24, left: 24, right: 24),
+                  child: Text.rich(
+                    TextSpan(
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
+                      children: [
+                        const TextSpan(
+                          text: 'By continuing, you agree to our ',
+                        ),
+                        TextSpan(
+                          text: 'Terms of Service',
+                          style: TextStyle(
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                        const TextSpan(
+                          text: ' and ',
+                        ),
+                        TextSpan(
+                          text: 'Privacy Policy',
+                          style: TextStyle(
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                        const TextSpan(text: '.'),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                  )
+                      .animate()
+                      .fadeIn(delay: 600.ms),
+                ),
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }

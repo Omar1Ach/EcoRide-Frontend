@@ -33,8 +33,9 @@ class _OtpVerificationScreenState
       List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
   Timer? _timer;
-  int _start = 30;
+  int _start = 105; // 1 minute 45 seconds
   bool _canResend = false;
+  bool _showHelp = false;
 
   @override
   void initState() {
@@ -56,7 +57,7 @@ class _OtpVerificationScreenState
 
   void _startTimer() {
     setState(() {
-      _start = 30;
+      _start = 105; // 1 minute 45 seconds
       _canResend = false;
     });
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -71,6 +72,18 @@ class _OtpVerificationScreenState
         });
       }
     });
+  }
+
+  String get _timerText {
+    final minutes = _start ~/ 60;
+    final seconds = _start % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  Color get _timerColor {
+    if (_start <= 0) return AppColors.error;
+    if (_start < 30) return AppColors.error;
+    return AppColors.warning;
   }
 
   String get _otpCode =>
@@ -159,143 +172,458 @@ class _OtpVerificationScreenState
   Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
-        backgroundColor: Colors.transparent,
-      ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: AppSpacing.xl),
-
-              // Icon
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.message_outlined,
-                    size: 40,
-                    color: AppColors.primary,
-                  ),
-                ).animate().scale(duration: 400.ms, curve: Curves.elasticOut),
-              ),
-
-              const SizedBox(height: AppSpacing.xl),
-
-              Text(
-                'Verification Code',
-                style: theme.textTheme.headlineMedium,
-                textAlign: TextAlign.center,
-              ).animate().fadeIn().slideY(begin: 0.2, end: 0),
-
-              const SizedBox(height: AppSpacing.sm),
-
-              Text(
-                'We sent a code to ${widget.phoneNumber}',
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-                textAlign: TextAlign.center,
-              ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.2, end: 0),
-
-              const SizedBox(height: AppSpacing.xxl),
-
-              // OTP Input Fields
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(6, (index) {
-                  return SizedBox(
-                    width: 45,
-                    height: 56,
-                    child: TextField(
-                      controller: _controllers[index],
-                      focusNode: _focusNodes[index],
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
-                      maxLength: 1,
-                      style: theme.textTheme.titleLarge,
-                      decoration: InputDecoration(
-                        counterText: '',
-                        filled: true,
-                        fillColor: _focusNodes[index].hasFocus 
-                            ? AppColors.primary.withOpacity(0.05) 
-                            : AppColors.surface,
-                        contentPadding: EdgeInsets.zero,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: AppColors.border),
+        child: Column(
+          children: [
+            // Header with Back Button and Progress Bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+                    onPressed: () => Navigator.pop(context),
+                    padding: EdgeInsets.zero,
+                  )
+                      .animate()
+                      .fadeIn(duration: 400.ms),
+                  Expanded(
+                    child: Center(
+                      child: Container(
+                        width: 96,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? AppColors.darkSurfaceVariant
+                              : AppColors.lightSurfaceVariant,
+                          borderRadius: BorderRadius.circular(4),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: AppColors.border),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                        child: FractionallySizedBox(
+                          widthFactor: 2 / 3, // 2 out of 3 steps
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
                         ),
                       ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      onChanged: (value) {
-                        if (value.isNotEmpty) {
-                          Haptics.light();
-                          if (index < 5) {
-                            _focusNodes[index + 1].requestFocus();
-                          } else {
-                            _focusNodes[index].unfocus();
-                            _handleVerify();
-                          }
-                        } else if (value.isEmpty && index > 0) {
-                          _focusNodes[index - 1].requestFocus();
-                        }
-                      },
                     ),
-                  ).animate().fadeIn(delay: (200 + (index * 50)).ms).slideY(begin: 0.2);
-                }),
+                  )
+                      .animate()
+                      .fadeIn(delay: 200.ms),
+                  const SizedBox(width: 48), // Balance the back button
+                ],
               ),
+            ),
 
-              const SizedBox(height: AppSpacing.xxl),
+            // Main Content
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 16),
 
-              // Verify Button
-              PrimaryButton(
-                text: 'Verify',
-                onPressed: _handleVerify,
-                isLoading: authState.isLoading,
-              ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.2),
+                    // Logo
+                    Image.asset(
+                      'assets/images/logo.png',
+                      height: 80,
+                      fit: BoxFit.contain,
+                    )
+                        .animate()
+                        .fadeIn(duration: 600.ms)
+                        .scale(
+                          begin: const Offset(0.8, 0.8),
+                          end: const Offset(1, 1),
+                        ),
 
-              const SizedBox(height: AppSpacing.xl),
+                    const SizedBox(height: 32),
 
-              // Resend OTP
-              Center(
-                child: TextButton(
-                  onPressed: _canResend ? _handleResend : null,
-                  child: Text(
-                    _canResend
-                        ? 'Resend Code'
-                        : 'Resend code in $_start s',
-                    style: TextStyle(
-                      color: _canResend ? AppColors.primary : AppColors.textSecondary,
-                      fontWeight: FontWeight.w600,
+                    // Title
+                    Text(
+                      'Enter Verification Code',
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    )
+                        .animate()
+                        .fadeIn(delay: 200.ms)
+                        .slideY(begin: 0.2, end: 0),
+
+                    const SizedBox(height: 8),
+
+                    // Subtitle with phone number
+                    Column(
+                      children: [
+                        Text(
+                          "We've sent a 6-digit code to",
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          widget.phoneNumber,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    )
+                        .animate()
+                        .fadeIn(delay: 300.ms)
+                        .slideY(begin: 0.2, end: 0),
+
+                    const SizedBox(height: 40),
+
+                    // OTP Input Fields
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(6, (index) {
+                        return Container(
+                          width: 51,
+                          height: 56,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          child: TextField(
+                            controller: _controllers[index],
+                            focusNode: _focusNodes[index],
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            maxLength: 1,
+                            style: theme.textTheme.headlineSmall,
+                            decoration: InputDecoration(
+                              counterText: '',
+                              filled: true,
+                              fillColor: isDark
+                                  ? AppColors.darkSurfaceVariant
+                                  : AppColors.lightSurface,
+                              contentPadding: EdgeInsets.zero,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: isDark
+                                      ? AppColors.darkBorder
+                                      : AppColors.lightBorder,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: isDark
+                                      ? AppColors.darkBorder
+                                      : AppColors.lightBorder,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: const BorderSide(
+                                  color: AppColors.primary,
+                                  width: 2,
+                                ),
+                              ),
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            onChanged: (value) {
+                              if (value.isNotEmpty) {
+                                Haptics.light();
+                                if (index < 5) {
+                                  _focusNodes[index + 1].requestFocus();
+                                } else {
+                                  _focusNodes[index].unfocus();
+                                }
+                              } else if (value.isEmpty && index > 0) {
+                                _focusNodes[index - 1].requestFocus();
+                              }
+                            },
+                            onTap: () {
+                              if (_controllers[index].text.isNotEmpty) {
+                                _controllers[index].selection =
+                                    TextSelection.fromPosition(
+                                  TextPosition(
+                                      offset: _controllers[index].text.length),
+                                );
+                              }
+                            },
+                          ),
+                        ).animate().fadeIn(delay: (400 + (index * 50)).ms);
+                      }),
                     ),
+
+                    const SizedBox(height: 32),
+
+                    // Timer
+                    Text.rich(
+                      TextSpan(
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
+                        ),
+                        children: [
+                          const TextSpan(text: 'The code will expire in '),
+                          TextSpan(
+                            text: _timerText,
+                            style: TextStyle(
+                              color: _timerColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    )
+                        .animate()
+                        .fadeIn(delay: 800.ms),
+
+                    const SizedBox(height: 16),
+
+                    // Resend OTP
+                    Text.rich(
+                      TextSpan(
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
+                        ),
+                        children: [
+                          const TextSpan(text: "Didn't receive the code? "),
+                          WidgetSpan(
+                            child: GestureDetector(
+                              onTap: _canResend ? _handleResend : null,
+                              child: Text(
+                                'Resend',
+                                style: TextStyle(
+                                  color: _canResend
+                                      ? AppColors.primary
+                                      : (isDark
+                                          ? AppColors.darkTextSecondary
+                                          : AppColors.lightTextSecondary),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    )
+                        .animate()
+                        .fadeIn(delay: 900.ms),
+
+                    const SizedBox(height: 24),
+
+                    // Verify Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: authState.isLoading ? null : _handleVerify,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: authState.isLoading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                ),
+                              )
+                            : Text(
+                                'Verify',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                      ),
+                    )
+                        .animate()
+                        .fadeIn(delay: 1000.ms)
+                        .slideY(begin: 0.2, end: 0),
+                  ],
+                ),
+              ),
+            ),
+
+            // Help Section Footer
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: isDark
+                    ? AppColors.darkBackground
+                    : AppColors.lightBackground,
+                border: Border(
+                  top: BorderSide(
+                    color: isDark
+                        ? AppColors.darkDivider
+                        : AppColors.lightDivider,
                   ),
                 ),
-              ).animate().fadeIn(delay: 700.ms),
-            ],
-          ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        _showHelp = !_showHelp;
+                      });
+                      Haptics.light();
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 12,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.help_outline,
+                            size: 20,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Having trouble?',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: isDark
+                                  ? AppColors.darkTextSecondary
+                                  : AppColors.lightTextSecondary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(
+                            _showHelp
+                                ? Icons.expand_less
+                                : Icons.expand_more,
+                            size: 20,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (_showHelp)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildHelpItem(
+                            context,
+                            '1. Check if you\'ve entered the correct phone number.',
+                            linkText: 'Edit number',
+                            onLinkTap: () => Navigator.pop(context),
+                          ),
+                          const SizedBox(height: 12),
+                          _buildHelpItem(
+                            context,
+                            '2. Ensure your phone has a stable network connection.',
+                          ),
+                          const SizedBox(height: 12),
+                          _buildHelpItem(
+                            context,
+                            '3. Wait for the countdown to finish before requesting a new code.',
+                          ),
+                          const SizedBox(height: 12),
+                          _buildHelpItem(
+                            context,
+                            '4. If you still face issues, please contact our ',
+                            linkText: 'support team',
+                            onLinkTap: () {
+                              // TODO: Open support
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                        .animate()
+                        .fadeIn(duration: 300.ms)
+                        .slideY(begin: -0.1, end: 0),
+                ],
+              ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildHelpItem(
+    BuildContext context,
+    String text, {
+    String? linkText,
+    VoidCallback? onLinkTap,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    if (linkText != null) {
+      final parts = text.split(linkText);
+      return Text.rich(
+        TextSpan(
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
+          ),
+          children: [
+            if (parts.isNotEmpty) TextSpan(text: parts[0]),
+            WidgetSpan(
+              child: GestureDetector(
+                onTap: onLinkTap,
+                child: Text(
+                  linkText,
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+            if (parts.length > 1) TextSpan(text: parts[1]),
+          ],
+        ),
+      );
+    }
+
+    return Text(
+      text,
+      style: theme.textTheme.bodySmall?.copyWith(
+        color: isDark
+            ? AppColors.darkTextSecondary
+            : AppColors.lightTextSecondary,
       ),
     );
   }
