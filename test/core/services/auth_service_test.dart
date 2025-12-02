@@ -103,5 +103,139 @@ void main() {
       // DioException.error is converted to string, so check for that
       expect(errorResult.message, isNotEmpty);
     });
+
+    test('register returns success when API call is successful', () async {
+      // Arrange
+      final registerRequest = const RegisterRequest(
+        fullName: 'Test User',
+        email: 'test@example.com',
+        phoneNumber: '+212612345678',
+        password: 'password123',
+      );
+
+      when(mockDio.post(
+        ApiConstants.register,
+        data: anyNamed('data'),
+      )).thenAnswer((_) async => Response(
+        data: {},
+        statusCode: 200,
+        requestOptions: RequestOptions(path: ApiConstants.register),
+      ));
+
+      // Act
+      final result = await authService.register(registerRequest);
+
+      // Assert
+      expect(result, isA<Success<void>>());
+    });
+
+    test('register returns error when email already exists', () async {
+      // Arrange
+      final registerRequest = const RegisterRequest(
+        fullName: 'Test User',
+        email: 'existing@example.com',
+        phoneNumber: '+212612345678',
+        password: 'password123',
+      );
+
+      when(mockDio.post(
+        ApiConstants.register,
+        data: anyNamed('data'),
+      )).thenThrow(DioException(
+        requestOptions: RequestOptions(path: ApiConstants.register),
+        response: Response(
+          statusCode: 409,
+          requestOptions: RequestOptions(path: ApiConstants.register),
+          data: {'message': 'Email already exists'},
+        ),
+        error: 'Email already exists',
+      ));
+
+      // Act
+      final result = await authService.register(registerRequest);
+
+      // Assert
+      expect(result, isA<Error<void>>());
+      final errorResult = result as Error<void>;
+      expect(errorResult.message, isNotEmpty);
+    });
+
+    test('logout returns success', () async {
+      // Act
+      final result = await authService.logout();
+
+      // Assert
+      expect(result, isA<Success<bool>>());
+    });
+
+    test('verifyOtp returns success when OTP is valid', () async {
+      // Arrange
+      final request = const VerifyOtpRequest(
+        phoneNumber: '+212612345678',
+        code: '123456',
+      );
+
+      when(mockDio.post(
+        ApiConstants.verifyOtp,
+        data: anyNamed('data'),
+      )).thenAnswer((_) async => Response(
+        data: {'message': 'Phone verified successfully'},
+        statusCode: 200,
+        requestOptions: RequestOptions(path: ApiConstants.verifyOtp),
+      ));
+
+      // Act
+      final result = await authService.verifyOtp(request);
+
+      // Assert
+      expect(result, isA<Success<bool>>());
+    });
+
+    test('verifyOtp returns error when OTP is invalid', () async {
+      // Arrange
+      final request = const VerifyOtpRequest(
+        phoneNumber: '+212612345678',
+        code: '000000',
+      );
+
+      when(mockDio.post(
+        ApiConstants.verifyOtp,
+        data: anyNamed('data'),
+      )).thenThrow(DioException(
+        requestOptions: RequestOptions(path: ApiConstants.verifyOtp),
+        response: Response(
+          statusCode: 400,
+          requestOptions: RequestOptions(path: ApiConstants.verifyOtp),
+          data: {'message': 'Invalid or expired OTP'},
+        ),
+        error: 'Invalid or expired OTP',
+      ));
+
+      // Act
+      final result = await authService.verifyOtp(request);
+
+      // Assert
+      expect(result, isA<Error<bool>>());
+    });
+
+    test('resendOtp returns success', () async {
+      // Arrange
+      const phoneNumber = '+212612345678';
+
+      when(mockDio.post(
+        ApiConstants.resendOtp,
+        data: anyNamed('data'),
+      )).thenAnswer((_) async => Response(
+        data: {},
+        statusCode: 200,
+        requestOptions: RequestOptions(path: ApiConstants.resendOtp),
+      ));
+
+      // Act
+      final result = await authService.resendOtp(phoneNumber);
+
+      // Assert
+      expect(result, isA<Success<bool>>());
+    });
   });
 }
