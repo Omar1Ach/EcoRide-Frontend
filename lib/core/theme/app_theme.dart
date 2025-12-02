@@ -383,9 +383,8 @@ class AppTheme {
     required Color backgroundColor,
     required Color borderColor,
   }) {
-    return const CardThemeData(
+    return CardThemeData(
       elevation: 0,
-    ).copyWith(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radiusLg),
         side: BorderSide(color: borderColor),
