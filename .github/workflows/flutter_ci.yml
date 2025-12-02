@@ -20,10 +20,17 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.27.0'
           channel: 'stable'
+          cache: true
+
+      - name: Clean build artifacts
+        run: flutter clean
 
       - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify dependencies
         run: flutter pub get
 
       - name: Generate code
@@ -32,5 +39,23 @@ jobs:
       - name: Run flutter analyze
         run: flutter analyze --no-fatal-infos
 
-      - name: Run tests
-        run: flutter test
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      - name: Check test coverage
+        run: |
+          COVERAGE_LINES=$(grep -o "LF:" coverage/lcov.info | wc -l)
+          COVERED_LINES=$(grep -o "LH:" coverage/lcov.info | wc -l)
+          if [ "$COVERAGE_LINES" -gt 0 ]; then
+            COVERAGE_PERCENT=$((COVERED_LINES * 100 / COVERAGE_LINES))
+            echo "Test Coverage: $COVERAGE_PERCENT% ($COVERED_LINES/$COVERAGE_LINES lines)"
+            if [ "$COVERAGE_PERCENT" -lt 60 ]; then
+              echo "Warning: Coverage is below 60% threshold"
+            fi
+          fi
+
+      - name: Upload coverage to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage/lcov.info
