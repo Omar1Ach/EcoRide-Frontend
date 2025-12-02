@@ -806,7 +806,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
                     final vehicle = entry.key;
                     final distance = entry.value;
 
-                    return _buildVehicleListItem(vehicle, distance, isDark);
+                    return _buildVehicleListItem(vehicle, distance, isDark, index);
                   },
                 ),
               ),
@@ -868,7 +868,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
     );
   }
 
-  Widget _buildVehicleListItem(Vehicle vehicle, double distance, bool isDark) {
+  Widget _buildVehicleListItem(Vehicle vehicle, double distance, bool isDark, int index) {
     final distanceText = distance < 1000
         ? '${distance.round()}m'
         : '${(distance / 1000).toStringAsFixed(1)}km';
@@ -974,7 +974,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
           ),
         ],
       ),
-    ).animate().fadeIn(delay: Duration(milliseconds: 50 * vehiclesWithDistance.indexOf(MapEntry(vehicle, distance)))).slideX(begin: 0.2);
+    ).animate().fadeIn(delay: Duration(milliseconds: 50 * index)).slideX(begin: 0.2);
   }
 
   Future<void> _handleScanButton(BuildContext context) async {

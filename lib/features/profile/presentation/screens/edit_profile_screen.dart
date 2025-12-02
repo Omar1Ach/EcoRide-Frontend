@@ -90,8 +90,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     return null;
   }
 
-  String? _validatePhone(String value) {
-    if (value.isEmpty) {
+  String? _validatePhone(String? value) {
+    if (value == null || value.isEmpty) {
       return 'Phone number is required';
     }
     final phoneRegex = RegExp(r'^[0-9\s]{9,}$');
