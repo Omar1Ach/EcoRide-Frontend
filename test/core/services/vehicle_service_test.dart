@@ -45,11 +45,11 @@ void main() {
       when(mockDio.get(
         ApiConstants.searchVehicles,
         queryParameters: anyNamed('queryParameters'),
-      )).thenAnswer((_) async => Response(
+      ),).thenAnswer((_) async => Response(
         data: vehiclesData,
         statusCode: 200,
         requestOptions: RequestOptions(path: ApiConstants.searchVehicles),
-      ));
+      ),);
 
       // Act
       final result = await vehicleService.searchVehicles(request);
@@ -77,11 +77,11 @@ void main() {
       when(mockDio.post(
         ApiConstants.scanQr,
         data: anyNamed('data'),
-      )).thenAnswer((_) async => Response(
+      ),).thenAnswer((_) async => Response(
         data: scanResponseData,
         statusCode: 200,
         requestOptions: RequestOptions(path: ApiConstants.scanQr),
-      ));
+      ),);
 
       // Act
       final result = await vehicleService.scanQrCode(request);
@@ -104,7 +104,7 @@ void main() {
       when(mockDio.get(
         ApiConstants.searchVehicles,
         queryParameters: anyNamed('queryParameters'),
-      )).thenThrow(DioException(
+      ),).thenThrow(DioException(
         requestOptions: RequestOptions(path: ApiConstants.searchVehicles),
         response: Response(
           statusCode: 500,
@@ -112,7 +112,7 @@ void main() {
           data: {'message': 'Internal server error'},
         ),
         error: 'Internal server error',
-      ));
+      ),);
 
       // Act
       final result = await vehicleService.searchVehicles(request);
@@ -128,7 +128,7 @@ void main() {
       when(mockDio.post(
         ApiConstants.scanQr,
         data: anyNamed('data'),
-      )).thenThrow(DioException(
+      ),).thenThrow(DioException(
         requestOptions: RequestOptions(path: ApiConstants.scanQr),
         response: Response(
           statusCode: 404,
@@ -136,7 +136,7 @@ void main() {
           data: {'message': 'Vehicle not found'},
         ),
         error: 'Vehicle not found',
-      ));
+      ),);
 
       // Act
       final result = await vehicleService.scanQrCode(request);
@@ -161,11 +161,11 @@ void main() {
 
       when(mockDio.get(
         '${ApiConstants.vehicleDetails}/$vehicleId',
-      )).thenAnswer((_) async => Response(
+      ),).thenAnswer((_) async => Response(
         data: vehicleData,
         statusCode: 200,
         requestOptions: RequestOptions(path: '${ApiConstants.vehicleDetails}/$vehicleId'),
-      ));
+      ),);
 
       // Act
       final result = await vehicleService.getVehicleDetails(vehicleId);
@@ -188,11 +188,11 @@ void main() {
       when(mockDio.get(
         ApiConstants.searchVehicles,
         queryParameters: anyNamed('queryParameters'),
-      )).thenAnswer((_) async => Response(
+      ),).thenAnswer((_) async => Response(
         data: [],
         statusCode: 200,
         requestOptions: RequestOptions(path: ApiConstants.searchVehicles),
-      ));
+      ),);
 
       // Act
       final result = await vehicleService.searchVehicles(request);

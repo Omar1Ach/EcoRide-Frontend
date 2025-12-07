@@ -101,8 +101,8 @@ class _ReservationActiveScreenState
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
       decoration: BoxDecoration(
         color: isDark
-            ? AppColors.darkBackground.withOpacity(0.8)
-            : AppColors.lightBackground.withOpacity(0.8),
+            ? AppColors.darkBackground.withValues(alpha: 0.8)
+            : AppColors.lightBackground.withValues(alpha: 0.8),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,7 +114,7 @@ class _ReservationActiveScreenState
               return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.2),
+                  color: AppColors.primary.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                 ),
                 child: Row(
@@ -124,7 +124,7 @@ class _ReservationActiveScreenState
                       width: 8,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(
+                        color: AppColors.primary.withValues(alpha: 
                           0.5 + (_pulseController.value * 0.5),
                         ),
                         shape: BoxShape.circle,
@@ -149,7 +149,7 @@ class _ReservationActiveScreenState
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.error.withOpacity(0.2),
+              color: AppColors.error.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: IconButton(
@@ -224,7 +224,7 @@ class _ReservationActiveScreenState
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -244,7 +244,7 @@ class _ReservationActiveScreenState
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              child: Icon(
+              child: const Icon(
                 Icons.electric_scooter,
                 size: 40,
                 color: AppColors.primary,
@@ -277,7 +277,7 @@ class _ReservationActiveScreenState
                 Row(
                   children: [
                     // Battery
-                    Icon(
+                    const Icon(
                       Icons.battery_charging_full,
                       size: 16,
                       color: AppColors.primary,
@@ -324,7 +324,7 @@ class _ReservationActiveScreenState
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -363,7 +363,7 @@ class _ReservationActiveScreenState
                       colors: [
                         Colors.transparent,
                         (isDark ? AppColors.darkSurface : AppColors.lightSurface)
-                            .withOpacity(0.9),
+                            .withValues(alpha: 0.9),
                       ],
                     ),
                   ),
@@ -405,7 +405,7 @@ class _ReservationActiveScreenState
                   icon: const Icon(Icons.open_in_new, size: 18),
                   label: const Text('Open in Maps'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary.withOpacity(0.2),
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.2),
                     foregroundColor: AppColors.primary,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(
@@ -429,7 +429,7 @@ class _ReservationActiveScreenState
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -503,8 +503,8 @@ class _ReservationActiveScreenState
   }
 
   Widget _buildInfoBanners() {
-    return Column(
-      children: const [
+    return const Column(
+      children: [
         AlertBanner(
           icon: Icons.rule,
           message:
@@ -527,7 +527,7 @@ class _ReservationActiveScreenState
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: (isDark ? AppColors.darkSurface : AppColors.lightSurface)
-            .withOpacity(0.9),
+            .withValues(alpha: 0.9),
         border: Border(
           top: BorderSide(
             color: isDark ? AppColors.darkBorder : AppColors.lightBorder,

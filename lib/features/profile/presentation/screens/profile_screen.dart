@@ -172,8 +172,8 @@ class ProfileScreen extends ConsumerWidget {
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  AppColors.primary.withOpacity(0.7),
-                  AppColors.primary.withOpacity(0.3),
+                  AppColors.primary.withValues(alpha: 0.7),
+                  AppColors.primary.withValues(alpha: 0.3),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -219,7 +219,7 @@ class ProfileScreen extends ConsumerWidget {
                 // TODO: Implement image picker
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary.withOpacity(0.2),
+                backgroundColor: AppColors.primary.withValues(alpha: 0.2),
                 foregroundColor: AppColors.primary,
                 elevation: 0,
                 minimumSize: const Size(double.infinity, 40),
@@ -360,7 +360,7 @@ class ProfileScreen extends ConsumerWidget {
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: isDark
-                ? AppColors.darkSurface.withOpacity(0.5)
+                ? AppColors.darkSurface.withValues(alpha: 0.5)
                 : const Color(0xFFF5F5F5),
             foregroundColor: isDark
                 ? const Color(0xFFFF6B6B)

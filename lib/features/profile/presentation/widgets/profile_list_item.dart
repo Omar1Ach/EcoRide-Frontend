@@ -42,7 +42,7 @@ class ProfileListItem extends StatelessWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   color: iconBackgroundColor ??
-                      AppColors.primary.withOpacity(0.2),
+                      AppColors.primary.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 ),
                 child: Icon(

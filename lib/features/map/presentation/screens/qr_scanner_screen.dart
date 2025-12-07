@@ -108,7 +108,7 @@ class _QrScannerScreenState extends State<QrScannerScreen>
           // Black overlay
           Positioned.fill(
             child: Container(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
             ),
           ),
 
@@ -123,7 +123,7 @@ class _QrScannerScreenState extends State<QrScannerScreen>
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(0.5),
+                    Colors.black.withValues(alpha: 0.5),
                     Colors.transparent,
                   ],
                 ),
@@ -169,7 +169,7 @@ class _QrScannerScreenState extends State<QrScannerScreen>
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withOpacity(0.5),
+                    Colors.black.withValues(alpha: 0.5),
                   ],
                 ),
               ),
@@ -222,7 +222,7 @@ class _QrScannerScreenState extends State<QrScannerScreen>
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(AppTheme.radiusFull),
       ),
       child: ClipRRect(
@@ -300,12 +300,12 @@ class _QrScannerScreenState extends State<QrScannerScreen>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF13EC5B).withOpacity(0.5),
+                        color: const Color(0xFF13EC5B).withValues(alpha: 0.5),
                         blurRadius: 10,
                         spreadRadius: 2,
                       ),
                       BoxShadow(
-                        color: const Color(0xFF13EC5B).withOpacity(0.3),
+                        color: const Color(0xFF13EC5B).withValues(alpha: 0.3),
                         blurRadius: 20,
                         spreadRadius: 4,
                       ),
@@ -498,21 +498,21 @@ class _ManualEntryBottomSheetState extends State<_ManualEntryBottomSheet> {
                 decoration: InputDecoration(
                   hintText: 'e.g., ECR-12345',
                   hintStyle: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                   ),
                   filled: true,
-                  fillColor: Colors.white.withOpacity(0.1),
+                  fillColor: Colors.white.withValues(alpha: 0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       width: 2,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       width: 2,
                     ),
                   ),

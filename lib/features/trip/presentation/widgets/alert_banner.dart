@@ -19,13 +19,13 @@ class AlertBanner extends StatelessWidget {
   Color _getBackgroundColor() {
     switch (type) {
       case AlertType.warning:
-        return AppColors.warning.withOpacity(0.2);
+        return AppColors.warning.withValues(alpha: 0.2);
       case AlertType.error:
-        return AppColors.error.withOpacity(0.2);
+        return AppColors.error.withValues(alpha: 0.2);
       case AlertType.info:
-        return AppColors.info.withOpacity(0.2);
+        return AppColors.info.withValues(alpha: 0.2);
       case AlertType.success:
-        return AppColors.success.withOpacity(0.2);
+        return AppColors.success.withValues(alpha: 0.2);
     }
   }
 

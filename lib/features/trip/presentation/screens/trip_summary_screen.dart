@@ -97,13 +97,13 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen>
           center: Alignment.center,
           radius: 1.0,
           colors: [
-            const Color(0xFFD8B4A0).withOpacity(isDark ? 0.1 : 0.2),
+            const Color(0xFFD8B4A0).withValues(alpha: isDark ? 0.1 : 0.2),
             Colors.transparent,
           ],
         ),
         color: isDark
             ? AppColors.darkBackground
-            : AppColors.lightBackground.withOpacity(0.5),
+            : AppColors.lightBackground.withValues(alpha: 0.5),
       ),
       child: ScaleTransition(
         scale: _scaleAnimation,
@@ -115,7 +115,7 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen>
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.3),
+                color: AppColors.primary.withValues(alpha: 0.3),
                 blurRadius: 24,
                 spreadRadius: 4,
               ),
@@ -168,7 +168,7 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen>
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
             blurRadius: isDark ? 16 : 12,
             offset: const Offset(0, 4),
           ),
@@ -263,11 +263,11 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen>
       height: 40,
       decoration: BoxDecoration(
         color: (isDark ? AppColors.darkBackground : AppColors.lightBackground)
-            .withOpacity(0.8),
+            .withValues(alpha: 0.8),
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
           ),
         ],
@@ -360,11 +360,11 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen>
         ),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       ),
-      child: Row(
+      child: const Row(
         children: [
           Expanded(
             child: Column(
-              children: const [
+              children: [
                 TripStatItem(label: 'Duration', value: '15 min'),
                 SizedBox(height: 20),
                 TripStatItem(label: 'Avg. Speed', value: '10 km/h'),
@@ -373,7 +373,7 @@ class _TripSummaryScreenState extends ConsumerState<TripSummaryScreen>
           ),
           Expanded(
             child: Column(
-              children: const [
+              children: [
                 TripStatItem(label: 'Distance', value: '2.5 km'),
                 SizedBox(height: 20),
                 TripStatItem(label: 'CO2 Saved', value: '1.2 kg'),

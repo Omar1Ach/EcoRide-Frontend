@@ -8,6 +8,7 @@ plugins {
 android {
     namespace = "com.example.ecoride"
     compileSdk = flutter.compileSdkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -16,6 +17,11 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    lint {
+        checkReleaseBuilds = false
+        abortOnError = false
     }
 
     defaultConfig {

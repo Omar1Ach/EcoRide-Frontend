@@ -55,11 +55,11 @@ void main() {
       when(mockDio.post(
         ApiConstants.login,
         data: anyNamed('data'),
-      )).thenAnswer((_) async => Response(
+      ),).thenAnswer((_) async => Response(
         data: authResponseData,
         statusCode: 200,
         requestOptions: RequestOptions(path: ApiConstants.login),
-      ));
+      ),);
 
       when(mockStorage.write(key: anyNamed('key'), value: anyNamed('value')))
           .thenAnswer((_) async {});
@@ -84,7 +84,7 @@ void main() {
       when(mockDio.post(
         ApiConstants.login,
         data: anyNamed('data'),
-      )).thenThrow(DioException(
+      ),).thenThrow(DioException(
         requestOptions: RequestOptions(path: ApiConstants.login),
         response: Response(
           statusCode: 401,
@@ -92,7 +92,7 @@ void main() {
           data: {'message': 'Invalid credentials'},
         ),
         error: 'Invalid credentials',
-      ));
+      ),);
 
       // Act
       final result = await authService.login(loginRequest);
@@ -116,11 +116,11 @@ void main() {
       when(mockDio.post(
         ApiConstants.register,
         data: anyNamed('data'),
-      )).thenAnswer((_) async => Response(
+      ),).thenAnswer((_) async => Response(
         data: {},
         statusCode: 200,
         requestOptions: RequestOptions(path: ApiConstants.register),
-      ));
+      ),);
 
       // Act
       final result = await authService.register(registerRequest);
@@ -141,7 +141,7 @@ void main() {
       when(mockDio.post(
         ApiConstants.register,
         data: anyNamed('data'),
-      )).thenThrow(DioException(
+      ),).thenThrow(DioException(
         requestOptions: RequestOptions(path: ApiConstants.register),
         response: Response(
           statusCode: 409,
@@ -149,7 +149,7 @@ void main() {
           data: {'message': 'Email already exists'},
         ),
         error: 'Email already exists',
-      ));
+      ),);
 
       // Act
       final result = await authService.register(registerRequest);
@@ -178,11 +178,11 @@ void main() {
       when(mockDio.post(
         ApiConstants.verifyOtp,
         data: anyNamed('data'),
-      )).thenAnswer((_) async => Response(
+      ),).thenAnswer((_) async => Response(
         data: {'message': 'Phone verified successfully'},
         statusCode: 200,
         requestOptions: RequestOptions(path: ApiConstants.verifyOtp),
-      ));
+      ),);
 
       // Act
       final result = await authService.verifyOtp(request);
@@ -201,7 +201,7 @@ void main() {
       when(mockDio.post(
         ApiConstants.verifyOtp,
         data: anyNamed('data'),
-      )).thenThrow(DioException(
+      ),).thenThrow(DioException(
         requestOptions: RequestOptions(path: ApiConstants.verifyOtp),
         response: Response(
           statusCode: 400,
@@ -209,7 +209,7 @@ void main() {
           data: {'message': 'Invalid or expired OTP'},
         ),
         error: 'Invalid or expired OTP',
-      ));
+      ),);
 
       // Act
       final result = await authService.verifyOtp(request);
@@ -225,11 +225,11 @@ void main() {
       when(mockDio.post(
         ApiConstants.resendOtp,
         data: anyNamed('data'),
-      )).thenAnswer((_) async => Response(
+      ),).thenAnswer((_) async => Response(
         data: {},
         statusCode: 200,
         requestOptions: RequestOptions(path: ApiConstants.resendOtp),
-      ));
+      ),);
 
       // Act
       final result = await authService.resendOtp(phoneNumber);

@@ -32,11 +32,11 @@ void main() {
       when(mockDio.get(
         ApiConstants.walletBalance,
         queryParameters: anyNamed('queryParameters'),
-      )).thenAnswer((_) async => Response(
+      ),).thenAnswer((_) async => Response(
         data: balance.toJson(),
         statusCode: 200,
         requestOptions: RequestOptions(path: ApiConstants.walletBalance),
-      ));
+      ),);
 
       // Act
       final result = await walletService.getBalance('1');
@@ -47,7 +47,7 @@ void main() {
       verify(mockDio.get(
         ApiConstants.walletBalance,
         queryParameters: {'userId': '1'},
-      )).called(1);
+      ),).called(1);
     });
 
     test('addFunds returns updated balance on success', () async {
@@ -66,11 +66,11 @@ void main() {
       when(mockDio.post(
         ApiConstants.addFunds,
         data: anyNamed('data'),
-      )).thenAnswer((_) async => Response(
+      ),).thenAnswer((_) async => Response(
         data: balance.toJson(),
         statusCode: 200,
         requestOptions: RequestOptions(path: ApiConstants.addFunds),
-      ));
+      ),);
 
       // Act
       final result = await walletService.addFunds(request);
@@ -85,7 +85,7 @@ void main() {
       when(mockDio.get(
         ApiConstants.walletBalance,
         queryParameters: anyNamed('queryParameters'),
-      )).thenThrow(DioException(
+      ),).thenThrow(DioException(
         requestOptions: RequestOptions(path: ApiConstants.walletBalance),
         response: Response(
           statusCode: 404,
@@ -93,7 +93,7 @@ void main() {
           data: {'message': 'Wallet not found'},
         ),
         error: 'Wallet not found',
-      ));
+      ),);
 
       // Act
       final result = await walletService.getBalance('1');
@@ -113,7 +113,7 @@ void main() {
       when(mockDio.post(
         ApiConstants.addFunds,
         data: anyNamed('data'),
-      )).thenThrow(DioException(
+      ),).thenThrow(DioException(
         requestOptions: RequestOptions(path: ApiConstants.addFunds),
         response: Response(
           statusCode: 402,
@@ -121,7 +121,7 @@ void main() {
           data: {'message': 'Payment failed'},
         ),
         error: 'Payment failed',
-      ));
+      ),);
 
       // Act
       final result = await walletService.addFunds(request);
@@ -157,17 +157,17 @@ void main() {
             'balanceAfter': 90.0,
             'transactionDate': DateTime.now().toIso8601String(),
           },
-        ]
+        ],
       };
 
       when(mockDio.get(
         ApiConstants.transactions,
         queryParameters: anyNamed('queryParameters'),
-      )).thenAnswer((_) async => Response(
+      ),).thenAnswer((_) async => Response(
         data: transactionsData,
         statusCode: 200,
         requestOptions: RequestOptions(path: ApiConstants.transactions),
-      ));
+      ),);
 
       // Act
       final result = await walletService.getTransactionHistory(request);

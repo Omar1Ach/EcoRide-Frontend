@@ -34,7 +34,7 @@ class DrawerMenu extends ConsumerWidget {
                     'drawer.hi'.tr(args: [user?.fullName.split(' ').first ?? 'Rider']),
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: AppColors.lightTextPrimary,
                         ),
                   ),
                   const SizedBox(height: 24),
@@ -125,7 +125,7 @@ class DrawerMenu extends ConsumerWidget {
               child: Text(
                 'EcoRide v1.0.0',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.textHint,
+                      color: AppColors.lightTextHint,
                     ),
               ),
             ),
@@ -185,7 +185,7 @@ class DrawerMenu extends ConsumerWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
+                color: AppColors.lightTextSecondary,
               ),
         ),
       ],
@@ -199,7 +199,7 @@ class DrawerMenu extends ConsumerWidget {
     required VoidCallback onTap,
   }) {
     return ListTile(
-      leading: Icon(icon, color: AppColors.textSecondary, size: 28),
+      leading: Icon(icon, color: AppColors.lightTextSecondary, size: 28),
       title: Text(
         title,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(

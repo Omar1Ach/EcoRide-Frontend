@@ -122,7 +122,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 Text(
                   'Join the eco-revolution today',
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: AppColors.lightTextSecondary,
                   ),
                 ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.2, end: 0),
 

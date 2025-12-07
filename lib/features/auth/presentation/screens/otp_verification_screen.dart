@@ -353,7 +353,7 @@ class _OtpVerificationScreenState
                                 _controllers[index].selection =
                                     TextSelection.fromPosition(
                                   TextPosition(
-                                      offset: _controllers[index].text.length),
+                                      offset: _controllers[index].text.length,),
                                 );
                               }
                             },
@@ -446,7 +446,7 @@ class _OtpVerificationScreenState
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
+                                      Colors.white,),
                                 ),
                               )
                             : Text(
@@ -602,7 +602,7 @@ class _OtpVerificationScreenState
                 onTap: onLinkTap,
                 child: Text(
                   linkText,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w600,
                   ),

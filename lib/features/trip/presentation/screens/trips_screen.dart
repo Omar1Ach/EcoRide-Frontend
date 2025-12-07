@@ -30,7 +30,7 @@ class TripsScreen extends StatelessWidget {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                              color: AppColors.primaryLight.withOpacity(0.2),
+                              color: AppColors.primaryLight.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Icon(
@@ -72,7 +72,7 @@ class TripsScreen extends StatelessWidget {
                       const Icon(
                         Icons.access_time,
                         size: 16,
-                        color: AppColors.textSecondary,
+                        color: AppColors.lightTextSecondary,
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -83,7 +83,7 @@ class TripsScreen extends StatelessWidget {
                       const Icon(
                         Icons.route,
                         size: 16,
-                        color: AppColors.textSecondary,
+                        color: AppColors.lightTextSecondary,
                       ),
                       const SizedBox(width: 4),
                       Text(

@@ -20,8 +20,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final settingsAsync = ref.watch(userSettingsProvider);
-    final userProfileAsync = ref.watch(userProfileProvider);
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
@@ -78,7 +76,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
       decoration: BoxDecoration(
         color: (isDark ? AppColors.darkBackground : AppColors.lightBackground)
-            .withOpacity(0.8),
+            .withValues(alpha: 0.8),
       ),
       child: Row(
         children: [
@@ -121,7 +119,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ? []
             : [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, 2),
                 ),
@@ -138,8 +136,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.primary.withOpacity(0.7),
-                    AppColors.primary.withOpacity(0.3),
+                    AppColors.primary.withValues(alpha: 0.7),
+                    AppColors.primary.withValues(alpha: 0.3),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -188,7 +186,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                 );
               },
-              child: Text(
+              child: const Text(
                 'Edit',
                 style: TextStyle(
                   color: AppColors.primary,
@@ -224,7 +222,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ProfileListItem(
             icon: Icons.notifications,
             title: 'Push Notifications',
-            iconBackgroundColor: AppColors.primary.withOpacity(0.1),
+            iconBackgroundColor: AppColors.primary.withValues(alpha: 0.1),
             iconColor: AppColors.primary,
             showChevron: false,
             trailing: CustomToggleSwitch(
@@ -241,7 +239,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ProfileListItem(
             icon: Icons.language,
             title: 'Language',
-            iconBackgroundColor: AppColors.primary.withOpacity(0.1),
+            iconBackgroundColor: AppColors.primary.withValues(alpha: 0.1),
             iconColor: AppColors.primary,
             onTap: () {
               // TODO: Navigate to language selection
@@ -252,7 +250,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ProfileListItem(
             icon: Icons.dark_mode,
             title: 'Dark Mode',
-            iconBackgroundColor: AppColors.primary.withOpacity(0.1),
+            iconBackgroundColor: AppColors.primary.withValues(alpha: 0.1),
             iconColor: AppColors.primary,
             showChevron: false,
             trailing: CustomToggleSwitch(
@@ -270,7 +268,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ProfileListItem(
             icon: Icons.vibration,
             title: 'Haptic Feedback',
-            iconBackgroundColor: AppColors.primary.withOpacity(0.1),
+            iconBackgroundColor: AppColors.primary.withValues(alpha: 0.1),
             iconColor: AppColors.primary,
             showChevron: false,
             trailing: CustomToggleSwitch(
@@ -305,7 +303,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ProfileListItem(
           icon: Icons.lock,
           title: 'Change Password',
-          iconBackgroundColor: const Color(0xFFD97706).withOpacity(0.1),
+          iconBackgroundColor: const Color(0xFFD97706).withValues(alpha: 0.1),
           iconColor: const Color(0xFFD97706),
           onTap: () {
             // TODO: Navigate to change password
@@ -316,7 +314,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ProfileListItem(
           icon: Icons.shield,
           title: 'Privacy Settings',
-          iconBackgroundColor: const Color(0xFFD97706).withOpacity(0.1),
+          iconBackgroundColor: const Color(0xFFD97706).withValues(alpha: 0.1),
           iconColor: const Color(0xFFD97706),
           onTap: () {
             // TODO: Navigate to privacy settings
@@ -327,7 +325,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ProfileListItem(
           icon: Icons.credit_card,
           title: 'Payment Methods',
-          iconBackgroundColor: const Color(0xFFD97706).withOpacity(0.1),
+          iconBackgroundColor: const Color(0xFFD97706).withValues(alpha: 0.1),
           iconColor: const Color(0xFFD97706),
           onTap: () {
             // TODO: Navigate to payment methods
@@ -344,7 +342,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ProfileListItem(
           icon: Icons.info,
           title: 'About EcoRide',
-          iconBackgroundColor: Colors.grey.withOpacity(0.1),
+          iconBackgroundColor: Colors.grey.withValues(alpha: 0.1),
           iconColor: Colors.grey.shade600,
           onTap: () {
             // TODO: Navigate to about
@@ -355,7 +353,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ProfileListItem(
           icon: Icons.gavel,
           title: 'Terms of Service',
-          iconBackgroundColor: Colors.grey.withOpacity(0.1),
+          iconBackgroundColor: Colors.grey.withValues(alpha: 0.1),
           iconColor: Colors.grey.shade600,
           onTap: () {
             // TODO: Navigate to terms of service
@@ -366,7 +364,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ProfileListItem(
           icon: Icons.policy,
           title: 'Privacy Policy',
-          iconBackgroundColor: Colors.grey.withOpacity(0.1),
+          iconBackgroundColor: Colors.grey.withValues(alpha: 0.1),
           iconColor: Colors.grey.shade600,
           onTap: () {
             // TODO: Navigate to privacy policy

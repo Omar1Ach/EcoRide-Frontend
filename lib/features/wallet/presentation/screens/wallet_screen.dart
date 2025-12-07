@@ -39,7 +39,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen>
     if (user != null) {
       ref.invalidate(transactionHistoryProvider(
         TransactionHistoryRequest(userId: user.id, pageSize: 20),
-      ));
+      ),);
     }
   }
 
@@ -57,7 +57,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen>
     final transactionHistoryState = user != null
         ? ref.watch(transactionHistoryProvider(
             TransactionHistoryRequest(userId: user.id, pageSize: 20),
-          ))
+          ),)
         : const AsyncValue<List<WalletTransaction>>.data([]);
 
     return Scaffold(
@@ -139,7 +139,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen>
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -168,7 +168,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen>
               ),
             ),
             loading: () => const SkeletonLoader(width: 200, height: 40),
-            error: (err, _) => Text(
+            error: (err, _) => const Text(
               'Error loading balance',
               style: TextStyle(
                 fontSize: 18,
@@ -371,7 +371,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen>
       margin: const EdgeInsets.only(bottom: 4),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: isDark ? Colors.transparent : const Color(0xFFE5E7EB).withOpacity(0.3),
+        color: isDark ? Colors.transparent : const Color(0xFFE5E7EB).withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -437,18 +437,18 @@ class _WalletScreenState extends ConsumerState<WalletScreen>
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: isDark ? Colors.transparent : const Color(0xFFE5E7EB).withOpacity(0.3),
+        color: isDark ? Colors.transparent : const Color(0xFFE5E7EB).withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Row(
+      child: const Row(
         children: [
           SkeletonLoader(
             width: 48,
             height: 48,
             borderRadius: 12,
           ),
-          const SizedBox(width: 16),
-          const Expanded(
+          SizedBox(width: 16),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -458,8 +458,8 @@ class _WalletScreenState extends ConsumerState<WalletScreen>
               ],
             ),
           ),
-          const SizedBox(width: 12),
-          const SkeletonLoader(width: 80, height: 16),
+          SizedBox(width: 12),
+          SkeletonLoader(width: 80, height: 16),
         ],
       ),
     );
@@ -505,7 +505,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen>
       padding: const EdgeInsets.all(32),
       child: Column(
         children: [
-          Icon(
+          const Icon(
             Icons.error_outline,
             size: 64,
             color: AppColors.error,
@@ -593,7 +593,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen>
   String _getMonthName(int month) {
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
     ];
     return months[month - 1];
   }

@@ -405,7 +405,7 @@ class AppTheme {
   }) {
     return ChipThemeData(
       backgroundColor: backgroundColor,
-      deleteIconColor: textColor.withOpacity(0.7),
+      deleteIconColor: textColor.withValues(alpha: 0.7),
       labelStyle: GoogleFonts.inter(
         fontSize: 14,
         fontWeight: FontWeight.w500,

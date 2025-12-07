@@ -24,7 +24,7 @@ class HeroMetricCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isHighlighted
-            ? AppColors.primary.withOpacity(isDark ? 0.2 : 0.1)
+            ? AppColors.primary.withValues(alpha: isDark ? 0.2 : 0.1)
             : (isDark ? AppColors.darkSurface : AppColors.lightSurface),
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         border: isHighlighted
@@ -36,7 +36,7 @@ class HeroMetricCard extends StatelessWidget {
         boxShadow: isHighlighted
             ? [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.2),
+                  color: AppColors.primary.withValues(alpha: 0.2),
                   blurRadius: 8,
                   spreadRadius: 0,
                 ),
@@ -52,7 +52,7 @@ class HeroMetricCard extends StatelessWidget {
             label,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: isHighlighted
-                      ? AppColors.primary.withOpacity(0.9)
+                      ? AppColors.primary.withValues(alpha: 0.9)
                       : (isDark
                           ? AppColors.darkTextSecondary
                           : AppColors.lightTextSecondary),
@@ -83,7 +83,7 @@ class HeroMetricCard extends StatelessWidget {
             unit,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   color: isHighlighted
-                      ? AppColors.primary.withOpacity(0.9)
+                      ? AppColors.primary.withValues(alpha: 0.9)
                       : (isDark
                           ? AppColors.darkTextSecondary
                           : AppColors.lightTextSecondary),

@@ -93,7 +93,7 @@ void main() {
         createdAt: DateTime.now(),
       );
 
-      final request = UpdateProfileRequest(
+      final request = const UpdateProfileRequest(
         fullName: 'Updated Name',
         email: 'newemail@example.com',
         phoneNumber: '+212612345678',

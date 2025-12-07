@@ -243,7 +243,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
                           children: [
                             Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.electric_scooter,
                                   color: AppColors.primary,
                                   size: 28,
@@ -280,7 +280,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
                               children: [
                                 Transform.scale(
                                   scaleX: -1,
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.electric_scooter,
                                     color: AppColors.primary,
                                     size: 28,
@@ -425,13 +425,13 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: isDark
-                      ? AppColors.darkSurface.withOpacity(0.6)
-                      : Colors.white.withOpacity(0.6),
+                      ? AppColors.darkSurface.withValues(alpha: 0.6)
+                      : Colors.white.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                   border: Border.all(
                     color: isDark
-                        ? AppColors.darkBorder.withOpacity(0.2)
-                        : Colors.white.withOpacity(0.2),
+                        ? AppColors.darkBorder.withValues(alpha: 0.2)
+                        : Colors.white.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Row(
@@ -440,8 +440,8 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
                     Container(
                       decoration: BoxDecoration(
                         color: isDark
-                            ? AppColors.darkSurfaceVariant.withOpacity(0.5)
-                            : Colors.white.withOpacity(0.5),
+                            ? AppColors.darkSurfaceVariant.withValues(alpha: 0.5)
+                            : Colors.white.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                       child: Material(
@@ -469,8 +469,8 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
                       child: Container(
                         decoration: BoxDecoration(
                           color: isDark
-                              ? AppColors.darkSurfaceVariant.withOpacity(0.5)
-                              : Colors.white.withOpacity(0.5),
+                              ? AppColors.darkSurfaceVariant.withValues(alpha: 0.5)
+                              : Colors.white.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                         ),
                         child: TextField(
@@ -505,8 +505,8 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
                     Container(
                       decoration: BoxDecoration(
                         color: isDark
-                            ? AppColors.darkSurfaceVariant.withOpacity(0.5)
-                            : Colors.white.withOpacity(0.5),
+                            ? AppColors.darkSurfaceVariant.withValues(alpha: 0.5)
+                            : Colors.white.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                       child: Material(
@@ -550,7 +550,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -620,7 +620,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -658,7 +658,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -715,7 +715,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 20,
                 offset: const Offset(0, -4),
               ),
@@ -825,7 +825,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
                     borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withOpacity(0.3),
+                        color: AppColors.primary.withValues(alpha: 0.3),
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       ),
@@ -891,7 +891,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             ),
             child: Icon(
@@ -979,6 +979,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
 
   Future<void> _handleScanButton(BuildContext context) async {
     Haptics.medium();
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -1010,7 +1011,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
         }
       } else {
         Haptics.error();
-        ScaffoldMessenger.of(context).showSnackBar(
+        scaffoldMessenger.showSnackBar(
           const SnackBar(
             content: Text('Invalid QR code or vehicle not found'),
             backgroundColor: AppColors.error,
@@ -1029,7 +1030,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.2),
+            color: AppColors.primary.withValues(alpha: 0.2),
             shape: BoxShape.circle,
           ),
         ).animate(onPlay: (controller) => controller.repeat())
@@ -1044,7 +1045,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
             border: Border.all(color: Colors.white, width: 3),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -1071,7 +1072,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
             border: Border.all(color: Colors.white, width: 3),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 6,
                 offset: const Offset(0, 3),
               ),
@@ -1126,7 +1127,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 ),
                 child: Icon(
@@ -1159,8 +1160,8 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: vehicle.isAvailable
-                      ? AppColors.success.withOpacity(0.1)
-                      : AppColors.error.withOpacity(0.1),
+                      ? AppColors.success.withValues(alpha: 0.1)
+                      : AppColors.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                 ),
                 child: Text(
@@ -1302,7 +1303,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
             height: 80,
             decoration: BoxDecoration(
               color: isSelected
-                  ? AppColors.primary.withOpacity(0.1)
+                  ? AppColors.primary.withValues(alpha: 0.1)
                   : (isDark ? AppColors.darkSurface : Colors.white),
               shape: BoxShape.circle,
               border: Border.all(
@@ -1314,7 +1315,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with TickerProviderStateM
               boxShadow: [
                 if (!isSelected)
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),

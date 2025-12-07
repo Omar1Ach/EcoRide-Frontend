@@ -72,7 +72,7 @@ class _HoldToEndButtonState extends State<HoldToEndButton>
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.3),
+                  color: AppColors.primary.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -85,7 +85,7 @@ class _HoldToEndButtonState extends State<HoldToEndButton>
                   duration: const Duration(milliseconds: 100),
                   width: MediaQuery.of(context).size.width * _controller.value,
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   ),
                 ),

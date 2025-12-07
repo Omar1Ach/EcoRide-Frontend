@@ -18,7 +18,7 @@ class SectionCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: isDark
-            ? AppColors.darkSurface.withOpacity(0.5)
+            ? AppColors.darkSurface.withValues(alpha: 0.5)
             : const Color(0xFFF5F5F5),
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       ),

@@ -75,7 +75,7 @@ class _PremiumTextFieldState extends State<PremiumTextField> {
             boxShadow: _isFocused
                 ? [
                     BoxShadow(
-                      color: theme.primaryColor.withOpacity(0.1),
+                      color: theme.primaryColor.withValues(alpha: 0.1),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),

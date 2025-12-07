@@ -19,7 +19,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String _selectedCountryCode = '+212';
+  final String _selectedCountryCode = '+212';
 
   @override
   void dispose() {
@@ -94,8 +94,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             child: Container(
               decoration: BoxDecoration(
                 color: isDark
-                    ? Colors.black.withOpacity(0.3)
-                    : Colors.black.withOpacity(0.1),
+                    ? Colors.black.withValues(alpha: 0.3)
+                    : Colors.black.withValues(alpha: 0.1),
               ),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
@@ -134,18 +134,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: isDark
-                          ? Colors.black.withOpacity(0.7)
-                          : Colors.white.withOpacity(0.6),
+                          ? Colors.black.withValues(alpha: 0.7)
+                          : Colors.white.withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
                         color: isDark
-                            ? Colors.white.withOpacity(0.1)
-                            : Colors.white.withOpacity(0.2),
+                            ? Colors.white.withValues(alpha: 0.1)
+                            : Colors.white.withValues(alpha: 0.2),
                         width: 1,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           blurRadius: 40,
                           offset: const Offset(0, 20),
                         ),
@@ -318,7 +318,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       ),
                                       elevation: 0,
                                       shadowColor: AppColors.primary
-                                          .withOpacity(0.3),
+                                          .withValues(alpha: 0.3),
                                     ),
                                     child: Text(
                                       'Send Code',

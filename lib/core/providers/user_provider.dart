@@ -63,8 +63,8 @@ class UserSettingsNotifier extends StateNotifier<AsyncValue<UserSettings>> {
         },
         error: (message, _, __, ___) {
           // Fallback to default settings if API fails
-          state = AsyncValue.data(
-            const UserSettings(
+          state = const AsyncValue.data(
+            UserSettings(
               pushNotificationsEnabled: true,
               darkModeEnabled: false,
               hapticFeedbackEnabled: false,
@@ -75,8 +75,8 @@ class UserSettingsNotifier extends StateNotifier<AsyncValue<UserSettings>> {
       );
     } catch (e) {
       // Fallback to default settings
-      state = AsyncValue.data(
-        const UserSettings(
+      state = const AsyncValue.data(
+        UserSettings(
           pushNotificationsEnabled: true,
           darkModeEnabled: false,
           hapticFeedbackEnabled: false,

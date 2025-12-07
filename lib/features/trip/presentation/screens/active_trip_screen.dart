@@ -86,8 +86,8 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen>
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
       decoration: BoxDecoration(
         color: isDark
-            ? AppColors.darkBackground.withOpacity(0.8)
-            : AppColors.lightBackground.withOpacity(0.8),
+            ? AppColors.darkBackground.withValues(alpha: 0.8)
+            : AppColors.lightBackground.withValues(alpha: 0.8),
         border: Border(
           bottom: BorderSide(
             color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
@@ -103,13 +103,13 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen>
             height: 32,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.2),
+              color: AppColors.primary.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(AppTheme.radiusFull),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
+                const Icon(
                   Icons.electric_bike,
                   size: 16,
                   color: AppColors.primary,
@@ -139,7 +139,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen>
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.error.withOpacity(0.2),
+              color: AppColors.error.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: IconButton(
@@ -157,7 +157,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen>
   }
 
   Widget _buildHeroMetrics(BuildContext context) {
-    return Row(
+    return const Row(
       children: [
         // Duration Card
         Expanded(
@@ -168,7 +168,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen>
             isHighlighted: false,
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
 
         // Current Cost Card (Highlighted)
         Expanded(
@@ -179,7 +179,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen>
             isHighlighted: true,
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
 
         // Distance Card
         Expanded(
@@ -235,7 +235,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen>
         color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -286,7 +286,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen>
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.4),
+                      color: AppColors.primary.withValues(alpha: 0.4),
                       blurRadius: 8,
                       spreadRadius: 2,
                     ),
@@ -306,8 +306,8 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen>
   }
 
   Widget _buildAlertBanners() {
-    return Column(
-      children: const [
+    return const Column(
+      children: [
         AlertBanner(
           icon: Icons.battery_alert,
           message: 'Low Battery: Find a charging station soon.',
@@ -328,8 +328,8 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen>
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isDark
-            ? AppColors.darkBackground.withOpacity(0.9)
-            : AppColors.lightBackground.withOpacity(0.9),
+            ? AppColors.darkBackground.withValues(alpha: 0.9)
+            : AppColors.lightBackground.withValues(alpha: 0.9),
         border: Border(
           top: BorderSide(
             color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
@@ -346,7 +346,7 @@ class _ActiveTripScreenState extends ConsumerState<ActiveTripScreen>
             decoration: BoxDecoration(
               border: Border.all(
                 color: isDark
-                    ? AppColors.darkBorder.withOpacity(0.5)
+                    ? AppColors.darkBorder.withValues(alpha: 0.5)
                     : AppColors.lightBorder,
                 width: 1.5,
               ),

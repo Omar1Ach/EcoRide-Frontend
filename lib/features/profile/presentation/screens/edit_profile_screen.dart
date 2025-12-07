@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -27,7 +26,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   bool _isLoading = false;
   bool _isSaving = false;
   String? _emailError;
-  User? _currentUser;
 
   @override
   void initState() {
@@ -44,7 +42,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     try {
       final userProfile = await ref.read(userProfileProvider.future);
       setState(() {
-        _currentUser = userProfile;
         _fullNameController.text = userProfile.fullName;
         _emailController.text = userProfile.email;
         _phoneController.text = userProfile.phoneNumber.replaceFirst('+212', '');
@@ -134,7 +131,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   String _getMonthName(int month) {
     const months = [
       'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'July', 'August', 'September', 'October', 'November', 'December',
     ];
     return months[month - 1];
   }
@@ -280,7 +277,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         ),
                         if (_isSaving)
                           Container(
-                            color: Colors.black.withOpacity(0.3),
+                            color: Colors.black.withValues(alpha: 0.3),
                             child: const Center(
                               child: CircularProgressIndicator(),
                             ),
@@ -298,12 +295,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     return Container(
       decoration: BoxDecoration(
         color: (isDark ? AppColors.darkBackground : AppColors.lightBackground)
-            .withOpacity(0.8),
+            .withValues(alpha: 0.8),
         border: Border(
           bottom: BorderSide(
             color: isDark
-                ? Colors.grey.shade800.withOpacity(0.5)
-                : Colors.grey.shade200.withOpacity(0.5),
+                ? Colors.grey.shade800.withValues(alpha: 0.5)
+                : Colors.grey.shade200.withValues(alpha: 0.5),
             width: 1,
           ),
         ),
@@ -411,7 +408,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               borderSide: BorderSide(
-                color: AppColors.primary.withOpacity(0.5),
+                color: AppColors.primary.withValues(alpha: 0.5),
                 width: 2,
               ),
             ),

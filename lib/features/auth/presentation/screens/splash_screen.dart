@@ -103,7 +103,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                             width: 192,
                             height: 192,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
+                              color: Colors.white.withValues(alpha: 0.1),
                               shape: BoxShape.circle,
                             ),
                             child: Center(
@@ -155,7 +155,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                             'Your Moroccan journey, electrified.',
                             style:
                                 Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                      color: Colors.white.withOpacity(0.9),
+                                      color: Colors.white.withValues(alpha: 0.9),
                                       letterSpacing: 0.5,
                                     ),
                             textAlign: TextAlign.center,
@@ -184,10 +184,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: isDark
                                   ? AppColors.darkTextSecondary
-                                  : Colors.white.withOpacity(0.8),
+                                  : Colors.white.withValues(alpha: 0.8),
                             ),
-                        children: [
-                          const TextSpan(
+                        children: const [
+                          TextSpan(
                             text: 'By continuing, you agree to our ',
                           ),
                           TextSpan(
@@ -197,7 +197,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          const TextSpan(
+                          TextSpan(
                             text: ' and ',
                           ),
                           TextSpan(
@@ -207,7 +207,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          const TextSpan(text: '.'),
+                          TextSpan(text: '.'),
                         ],
                       ),
                       textAlign: TextAlign.center,
